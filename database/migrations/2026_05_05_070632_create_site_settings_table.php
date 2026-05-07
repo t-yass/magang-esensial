@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('site_settings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('key')->unique(); // ⬅️ tambahin ini
+    $table->text('value')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

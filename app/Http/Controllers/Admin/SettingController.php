@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certification;
+use App\Models\BusinessOwnership;
+use App\Models\TrainingExperience;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -47,53 +49,88 @@ class SettingController extends Controller
     // ─── About / Founder ─────────────────────────────────────────────────────
 
     public function about()
-    {
-        $s     = SiteSetting::all_settings();
-        $certs = Certification::orderBy('sort_order')->get();
-        return view('admin.settings.about', compact('s', 'certs'));
+{
+    $s          = SiteSetting::all_settings();
+    $certs      = Certification::orderBy('sort_order')->get();
+    $businesses = BusinessOwnership::orderBy('role')->orderBy('sort_order')->get();
+    $experiences = TrainingExperience::orderBy('sort_order')->get();
+ 
+    return view('admin.settings.about', compact('s', 'certs', 'businesses', 'experiences'));
+}
+ 
+public function updateAbout(Request $request)
+{
+    $request->validate([
+        'founder_name'      => 'required|string|max:200',
+        'founder_position'  => 'required|string|max:200',
+        'founder_instagram' => 'nullable|string|max:100',
+        'founder_whatsapp'  => 'nullable|string|max:20',
+        'profile_photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+    ]);
+ 
+    $data = $request->only([
+        'founder_name', 'founder_position',
+        'founder_instagram', 'founder_whatsapp',
+    ]);
+ 
+    if ($request->hasFile('profile_photo')) {
+        // Hapus foto lama jika ada
+        $old = SiteSetting::all_settings()['founder_photo'] ?? null;
+        if ($old && Storage::disk('public')->exists($old)) {
+            Storage::disk('public')->delete($old);
+        }
+        $path = $request->file('profile_photo')->store('images', 'public');
+        $data['founder_photo'] = $path;
     }
 
-    public function updateAbout(Request $request)
-    {
-        $request->validate([
-            'founder_name'      => 'required|string|max:200',
-            'founder_position'  => 'required|string|max:200',
-            'founder_instagram' => 'nullable|string|max:100',
-            'founder_whatsapp'  => 'nullable|string|max:20',
-            'stat_corporate'    => 'nullable|string|max:20',
-            'stat_government'   => 'nullable|string|max:20',
-            'stat_education'    => 'nullable|string|max:20',
-            'profile_photo'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+    SiteSetting::setMany($data);
+ 
+    // ── Sync Certifications ───────────────────────────────────────────────────
+    Certification::truncate();
+    $certTitles    = $request->input('cert_titles', []);
+    $certSubtitles = $request->input('cert_subtitles', []);
+    foreach ($certTitles as $i => $title) {
+        if (trim($title) === '') continue;
+        Certification::create([
+            'title'      => $title,
+            'subtitle'   => $certSubtitles[$i] ?? null,
+            'sort_order' => $i + 1,
+            'is_visible' => true,
         ]);
-
-        $data = $request->only([
-            'founder_name', 'founder_position',
-            'founder_instagram', 'founder_whatsapp',
-            'stat_corporate', 'stat_government', 'stat_education',
-        ]);
-
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('images', 'public');
-            $data['founder_photo'] = $path;
-        }
-
-        SiteSetting::setMany($data);
-
-        // Sync certifications
-        if ($request->has('certs')) {
-            Certification::truncate();
-            foreach (array_filter($request->input('certs', [])) as $i => $title) {
-                Certification::create([
-                    'title'      => $title,
-                    'sort_order' => $i + 1,
-                    'is_visible' => true,
-                ]);
-            }
-        }
-
-        return back()->with('success', 'Data founder berhasil disimpan!');
     }
-
+ 
+    // ── Sync Business Ownerships ─────────────────────────────────────────────
+    BusinessOwnership::truncate();
+    $bizRoles  = $request->input('biz_roles', []);
+    $bizNames  = $request->input('biz_names', []);
+    foreach ($bizNames as $i => $name) {
+        if (trim($name) === '') continue;
+        BusinessOwnership::create([
+            'role'       => $bizRoles[$i] ?? 'founder',
+            'entity_name'=> $name,
+            'sort_order' => $i + 1,
+            'is_visible' => true,
+        ]);
+    }
+ 
+    // ── Sync Training Experiences ────────────────────────────────────────────
+    TrainingExperience::truncate();
+    $expCategories   = $request->input('exp_categories', []);
+    $expStats        = $request->input('exp_stats', []);
+    $expDescriptions = $request->input('exp_descriptions', []);
+    foreach ($expCategories as $i => $category) {
+        if (trim($category) === '') continue;
+        TrainingExperience::create([
+            'category'    => $category,
+            'stat_label'  => $expStats[$i] ?? '',
+            'description' => $expDescriptions[$i] ?? null,
+            'sort_order'  => $i + 1,
+            'is_visible'  => true,
+        ]);
+    }
+ 
+    return back()->with('success', 'Data About Us berhasil disimpan!');
+}
     // ─── Contact ─────────────────────────────────────────────────────────────
 
     public function contact()

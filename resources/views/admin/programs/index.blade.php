@@ -5,7 +5,7 @@
 {{-- Add Form --}}
 <div class="form-card">
   <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wide">Tambah Program Baru</h3>
-  <form method="POST" action="{{ route('admin.programs.store') }}">
+  <form method="POST" action="{{ route('admin.programs.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="grid sm:grid-cols-2 gap-4">
       <div>
@@ -19,6 +19,16 @@
       <div class="sm:col-span-2">
         <label>Deskripsi</label>
         <textarea name="description" style="min-height:70px;" placeholder="Deskripsi singkat program…"></textarea>
+      </div>
+      <div>
+        <label>Foto Program</label>
+        <input type="file" name="photo" accept="image/*" class="file-input">
+        <small class="text-gray-500">Format: JPG, PNG, GIF. Max: 2MB</small>
+      </div>
+      <div>
+        <label>Video Program</label>
+        <input type="file" name="video" accept="video/*" class="file-input">
+        <small class="text-gray-500">Format: MP4, MOV, AVI, WMV. Max: 10MB</small>
       </div>
       <div>
         <label>Urutan Tampil</label>
@@ -38,7 +48,7 @@
   </div>
   <table>
     <thead>
-      <tr><th>No</th><th>Nama Program</th><th>Icon</th><th>Deskripsi</th><th>Status</th><th>Aksi</th></tr>
+      <tr><th>No</th><th>Nama Program</th><th>Icon</th><th>Foto</th><th>Video</th><th>Deskripsi</th><th>Status</th><th>Aksi</th></tr>
     </thead>
     <tbody>
       @forelse($programs as $p)
@@ -46,6 +56,20 @@
           <td>{{ $p->sort_order }}</td>
           <td class="font-medium text-gray-800">{{ $p->name }}</td>
           <td><span class="badge badge-blue">{{ $p->icon }}</span></td>
+          <td>
+            @if($p->photo_path)
+              <img src="{{ asset('storage/'.$p->photo_path) }}" alt="Foto" class="w-12 h-12 object-cover rounded">
+            @else
+              <span class="text-gray-400">Tidak ada</span>
+            @endif
+          </td>
+          <td>
+            @if($p->video_path)
+              <span class="badge badge-green">Ada video</span>
+            @else
+              <span class="text-gray-400">Tidak ada</span>
+            @endif
+          </td>
           <td class="text-gray-500 max-w-xs truncate">{{ $p->description }}</td>
           <td>
             @if($p->is_active)
@@ -63,6 +87,10 @@
     data-name="{{ $p->name }}"
     data-icon="{{ $p->icon }}"
     data-description="{{ $p->description }}"
+    data-photo="{{ $p->photo_path }}"
+    data-video="{{ $p->video_path }}"
+    data-order="{{ $p->sort_order }}"
+    data-active="{{ $p->is_active }}"
     onclick="openEditFromButton(this)"
 >
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
@@ -76,7 +104,7 @@
           </td>
         </tr>
       @empty
-        <tr><td colspan="6" class="text-center text-gray-400 py-8">Belum ada program.</td></tr>
+        <tr><td colspan="8" class="text-center text-gray-400 py-8">Belum ada program.</td></tr>
       @endforelse
     </tbody>
   </table>
@@ -86,7 +114,7 @@
 <div id="edit-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
     <h3 class="font-heading font-bold text-[#072d52] text-lg mb-4">Edit Program</h3>
-    <form id="edit-form" method="POST">
+    <form id="edit-form" method="POST" enctype="multipart/form-data">
       @csrf @method('PUT')
       <div class="grid gap-4">
         <div>
@@ -100,6 +128,18 @@
         <div>
           <label>Deskripsi</label>
           <textarea name="description" id="edit-desc" style="min-height:70px;"></textarea>
+        </div>
+        <div>
+          <label>Foto Program</label>
+          <input type="file" name="photo" accept="image/*" class="file-input" id="edit-photo">
+          <small class="text-gray-500">Format: JPG, PNG, GIF. Max: 2MB</small>
+          <div id="current-photo" class="mt-2"></div>
+        </div>
+        <div>
+          <label>Video Program</label>
+          <input type="file" name="video" accept="video/*" class="file-input" id="edit-video">
+          <small class="text-gray-500">Format: MP4, MOV, AVI, WMV. Max: 10MB</small>
+          <div id="current-video" class="mt-2"></div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -127,20 +167,45 @@
 @section('scripts')
 <script>
   const baseUrl = "{{ url('admin/programs') }}";
-  function openEdit(id, name, icon, desc, order, active) {
+  function openEdit(id, name, icon, desc, photo, video, order, active) {
     document.getElementById('edit-form').action = baseUrl + '/' + id;
     document.getElementById('edit-name').value = name;
     document.getElementById('edit-icon').value = icon;
     document.getElementById('edit-desc').value = desc;
     document.getElementById('edit-order').value = order;
     document.getElementById('edit-active').value = active;
+
+    // Handle current photo display
+    const currentPhotoDiv = document.getElementById('current-photo');
+    if (photo) {
+      currentPhotoDiv.innerHTML = '<img src="' + '{{ asset("storage/") }}' + photo + '" alt="Current photo" class="w-20 h-20 object-cover rounded border">';
+    } else {
+      currentPhotoDiv.innerHTML = '<span class="text-gray-400 text-sm">Tidak ada foto</span>';
+    }
+
+    // Handle current video display
+    const currentVideoDiv = document.getElementById('current-video');
+    if (video) {
+      currentVideoDiv.innerHTML = '<span class="text-green-600 text-sm">Video sudah ada - upload untuk mengganti</span>';
+    } else {
+      currentVideoDiv.innerHTML = '<span class="text-gray-400 text-sm">Tidak ada video</span>';
+    }
+
     document.getElementById('edit-modal').classList.remove('hidden');
   }
   function closeEdit() {
     document.getElementById('edit-modal').classList.add('hidden');
   }
   function openEditFromButton(btn){
+    let id = btn.dataset.id;
     let name = btn.dataset.name;
-}
+    let icon = btn.dataset.icon;
+    let desc = btn.dataset.description;
+    let photo = btn.dataset.photo;
+    let video = btn.dataset.video;
+    let order = btn.dataset.order;
+    let active = btn.dataset.active;
+    openEdit(id, name, icon, desc, photo, video, order, active);
+  }
 </script>
 @endsection

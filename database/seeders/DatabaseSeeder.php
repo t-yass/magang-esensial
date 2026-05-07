@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'font_body'        => 'DM Sans',
             'font_size'        => '16',
             'color_primary'    => '#04599A',
-            'color_accent'     => '#d4af37',
+            'color_accent'     => '#0ea5e9',
             'color_background' => '#072d52',
             'color_text'       => '#ffffff',
             // SEO
@@ -61,6 +61,25 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // Workshop Intensif
+DB::table('workshop_intensifs')->updateOrInsert(
+    ['id' => 1],
+    [
+        'description' => 'Pelatihan yang diikuti oleh berbagai instansi untuk dapat mewujudkan sebuah pelayanan yang memuaskan dan tak terlupakan bagi para client, serta meningkatkan citra positif instansi di antara para kompetitor yang ada.',
+        
+        'taglines' => json_encode([
+            'Pelayanan Prima',
+            'Citra Positif',
+            'Kompetitif',
+            'Profesional'
+        ]),
+
+        'is_visible' => true,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]
+);
+
         // Programs
         $programs = [
             ['name' => 'Pelatihan TIK Swasta',            'icon' => 'monitor',      'description' => 'Pelatihan Kerja Teknologi Informasi dan Komunikasi untuk instansi swasta',           'sort_order' => 1],
@@ -74,11 +93,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($programs as $p) {
-            DB::table('programs')->insertOrIgnore(array_merge($p, [
-                'is_active'  => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]));
+            DB::table('programs')->updateOrInsert(
+                ['name' => $p['name']],
+                array_merge($p, [
+                    'is_active'  => true,
+                    'updated_at' => now(),
+                ])
+            );
         }
 
         // Partners
@@ -92,13 +113,14 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($partners as $i => $name) {
-            DB::table('partners')->insertOrIgnore([
-                'name'       => $name,
-                'is_visible' => true,
-                'sort_order' => $i + 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('partners')->updateOrInsert(
+                ['name' => $name],
+                [
+                    'is_visible' => true,
+                    'sort_order' => $i + 1,
+                    'updated_at' => now(),
+                ]
+            );
         }
 
         // Certifications
@@ -112,13 +134,14 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($certs as $i => $title) {
-            DB::table('certifications')->insertOrIgnore([
-                'title'      => $title,
-                'sort_order' => $i + 1,
-                'is_visible' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('certifications')->updateOrInsert(
+                ['title' => $title],
+                [
+                    'sort_order' => $i + 1,
+                    'is_visible' => true,
+                    'updated_at' => now(),
+                ]
+            );
         }
 
         // Blog posts (sample)

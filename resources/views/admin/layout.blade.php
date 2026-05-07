@@ -104,6 +104,14 @@
         <i data-lucide="image" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-label">Galeri</span>
       </a>
+      <a href="{{ route('admin.workshop-intensif') }}" class="nav-item {{ request()->routeIs('admin.workshop-intensif') ? 'active' : '' }}">
+        <i data-lucide="presentation" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="nav-label">Workshop Intensif</span>
+      </a>
+      <a href="{{ route('admin.video-content') }}" class="nav-item {{ request()->routeIs('admin.video-content') ? 'active' : '' }}">
+        <i data-lucide="video" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="nav-label">Video Training</span>
+      </a>
       <a href="{{ route('admin.contact') }}" class="nav-item {{ request()->routeIs('admin.contact') ? 'active' : '' }}">
         <i data-lucide="phone" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-label">Kontak</span>

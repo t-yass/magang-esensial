@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\VideoContentController;
+use App\Http\Controllers\Admin\WorkshopIntensifController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public ────────────────────────────────────────────────
@@ -60,5 +62,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/gallery',          [GalleryController::class, 'index'])->name('gallery');
         Route::post('/gallery',         [GalleryController::class, 'store'])->name('gallery.store');
         Route::delete('/gallery/{gallery}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+
+        // Workshop Intensif
+        Route::get('/workshop-intensif',  [WorkshopIntensifController::class, 'index'])->name('workshop-intensif');
+        Route::put('/workshop-intensif/{workshop}', [WorkshopIntensifController::class, 'update'])->name('workshop-intensif.update');
+        Route::post('/workshop-intensif/{workshop}/photo', [WorkshopIntensifController::class, 'uploadPhoto'])->name('workshop-intensif.photo.upload');
+        Route::delete('/workshop-intensif/photo/{photo}', [WorkshopIntensifController::class, 'deletePhoto'])->name('workshop-intensif.photo.delete');
+        Route::patch('/workshop-intensif/photo/{photo}/toggle', [WorkshopIntensifController::class, 'togglePhotoVisibility'])->name('workshop-intensif.photo.toggle');
+
+        // Video Content
+        Route::get('/video-content', [VideoContentController::class, 'index'])->name('video-content');
+        Route::post('/video-content', [VideoContentController::class, 'store'])->name('video-content.store');
+        Route::put('/video-content/{video}', [VideoContentController::class, 'update'])->name('video-content.update');
+        Route::delete('/video-content/{video}', [VideoContentController::class, 'destroy'])->name('video-content.destroy');
     });
 });
