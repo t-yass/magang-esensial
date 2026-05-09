@@ -26,12 +26,9 @@
       </div>
       <div>
         <label class="form-label">Username Instagram <span class="text-gray-400 font-normal">(tanpa @)</span></label>
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">@</span>
-          <input type="text" name="founder_instagram"
-                 value="{{ old('founder_instagram', $s['founder_instagram'] ?? '') }}"
-                 class="form-input pl-7" placeholder="faris_isnawan">
-        </div>
+        <input type="text" name="founder_instagram"
+               value="{{ old('founder_instagram', $s['founder_instagram'] ?? '') }}"
+               class="form-input" placeholder="faris_isnawan">
       </div>
       <div>
         <label class="form-label">WhatsApp <span class="text-gray-400 font-normal">(format: 62xxx)</span></label>
@@ -77,13 +74,10 @@
     <div id="cert-list" class="space-y-3">
       @forelse($certs as $cert)
         <div class="cert-row flex gap-2 items-start p-3 bg-gray-50 rounded-lg border border-gray-100">
-          <div class="flex-1 grid sm:grid-cols-2 gap-2">
+          <div class="flex-1">
             <input type="text" name="cert_titles[]"
                    value="{{ $cert->title }}"
                    class="form-input text-sm" placeholder="Nama sertifikasi...">
-            <input type="text" name="cert_subtitles[]"
-                   value="{{ $cert->subtitle ?? '' }}"
-                   class="form-input text-sm" placeholder="Keterangan tambahan (opsional)">
           </div>
           <button type="button" class="btn-danger mt-0.5 shrink-0" onclick="this.closest('.cert-row').remove()">
             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -93,9 +87,8 @@
         {{-- default rows kalau belum ada data --}}
         @foreach(['Certified Professional Trainer – BNSP RI','Certified Trainer & Master Neo NLP','Certified Hypnotist & Hypnotherapist','Certified Praktisi Talents Mapping','Certified Master Service Excellence','Certified Public Speaking'] as $default)
           <div class="cert-row flex gap-2 items-start p-3 bg-gray-50 rounded-lg border border-gray-100">
-            <div class="flex-1 grid sm:grid-cols-2 gap-2">
+            <div class="flex-1">
               <input type="text" name="cert_titles[]" value="{{ $default }}" class="form-input text-sm" placeholder="Nama sertifikasi...">
-              <input type="text" name="cert_subtitles[]" value="" class="form-input text-sm" placeholder="Keterangan tambahan (opsional)">
             </div>
             <button type="button" class="btn-danger mt-0.5 shrink-0" onclick="this.closest('.cert-row').remove()">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -232,9 +225,8 @@
     const div  = document.createElement('div');
     div.className = 'cert-row flex gap-2 items-start p-3 bg-gray-50 rounded-lg border border-gray-100';
     div.innerHTML  = `
-      <div class="flex-1 grid sm:grid-cols-2 gap-2">
-        <input type="text" name="cert_titles[]"    class="form-input text-sm" placeholder="Nama sertifikasi...">
-        <input type="text" name="cert_subtitles[]" class="form-input text-sm" placeholder="Keterangan tambahan (opsional)">
+      <div class="flex-1">
+        <input type="text" name="cert_titles[]" class="form-input text-sm" placeholder="Nama sertifikasi...">
       </div>
       <button type="button" class="btn-danger mt-0.5 shrink-0" onclick="this.closest('.cert-row').remove()">
         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>

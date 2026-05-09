@@ -75,7 +75,7 @@
                 <i data-lucide="{{ $photo->is_visible ? 'eye-off' : 'eye' }}" class="w-3.5 h-3.5 text-white"></i>
               </button>
             </form>
-            <form method="POST" action="{{ route('admin.workshop-intensif.photo.delete', $photo) }}" onsubmit="return confirm('Hapus foto ini?')" style="display:inline;">
+            <form method="POST" action="{{ route('admin.workshop-intensif.photo.delete', $photo) }}" data-confirm="Hapus foto ini?" style="display:inline;">
               @csrf @method('DELETE')
               <button type="submit" class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5 text-white"></i>

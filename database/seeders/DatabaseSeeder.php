@@ -144,6 +144,111 @@ DB::table('workshop_intensifs')->updateOrInsert(
             );
         }
 
+        // Video contents: training and testimonial defaults
+        $trainingVideos = [
+            'https://www.instagram.com/reel/DTIVeWEEnJD/?igsh=dWN2eWRxbG50NmI5',
+            'https://www.instagram.com/reel/DTPsZsIkrEQ/?igsh=Yjk2Ym1ta254NGo=',
+            'https://www.instagram.com/reel/DXica9zk61y/?igsh=MXVibzF6c2ljYjdvZA==',
+            'https://www.instagram.com/reel/DWtdVVVEzwC/?igsh=MWdhcGF4ZzR2dDl5cQ==',
+            'https://www.instagram.com/reel/DTVF41zE5el/?igsh=eGNwaTY1YnBuNHM1',
+        ];
+
+        foreach ($trainingVideos as $i => $url) {
+            DB::table('video_contents')->updateOrInsert(
+                ['section' => 'training', 'url' => $url],
+                [
+                    'section'     => 'training',
+                    'source_type' => 'link',
+                    'title'       => 'Video Training ' . ($i + 1),
+                    'description' => null,
+                    'url'         => $url,
+                    'sort_order'  => $i + 1,
+                    'is_visible'  => true,
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]
+            );
+        }
+
+        $testimonialVideos = [
+            'https://www.instagram.com/reel/DTaWUPOk3_F/?igsh=aGtlNzg2bDBhaGQ5',
+            'https://www.instagram.com/reel/DTcscp6E8_0/?igsh=amZ6b2pjcDV3eXFn',
+            'https://www.instagram.com/reel/DUQa5J2E_WP/?igsh=a2g1YTY0aGp2ODQ0',
+        ];
+
+        foreach ($testimonialVideos as $i => $url) {
+            DB::table('video_contents')->updateOrInsert(
+                ['section' => 'testimonial', 'url' => $url],
+                [
+                    'section'     => 'testimonial',
+                    'source_type' => 'link',
+                    'title'       => 'Video Testimoni ' . ($i + 1),
+                    'description' => null,
+                    'url'         => $url,
+                    'sort_order'  => $i + 1,
+                    'is_visible'  => true,
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]
+            );
+        }
+
+        // Business Ownerships
+        $businesses = [
+            ['role' => 'owner', 'entity_name' => 'CV Trans Cemerlang Indonesia', 'sort_order' => 1],
+            ['role' => 'owner', 'entity_name' => 'PT. Esensial Mutu Indonesia', 'sort_order' => 2],
+            ['role' => 'owner', 'entity_name' => 'Shion Fashion', 'sort_order' => 3],
+            ['role' => 'founder', 'entity_name' => 'Esensial Training & Consulting', 'sort_order' => 1],
+            ['role' => 'founder', 'entity_name' => 'Communication Skill Academy', 'sort_order' => 2],
+            ['role' => 'founder', 'entity_name' => 'BukaBakat.id', 'sort_order' => 3],
+            ['role' => 'founder', 'entity_name' => 'GuruPAI.id', 'sort_order' => 4],
+            ['role' => 'founder', 'entity_name' => 'Motive Spirit Idea', 'sort_order' => 5],
+        ];
+
+        foreach ($businesses as $b) {
+            DB::table('business_ownerships')->updateOrInsert(
+                ['role' => $b['role'], 'entity_name' => $b['entity_name']],
+                array_merge($b, [
+                    'is_visible' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
+        }
+
+        // Training Experiences
+        $experiences = [
+            [
+                'category'    => 'Instansi Korporasi',
+                'stat_label'  => '35+',
+                'description' => 'PT. Mitaka (Indonesia & Jepang), PT. Chickin Indonesia, PT. Intan Giri Indonesia, dan lainnya.',
+                'sort_order'  => 1,
+            ],
+            [
+                'category'    => 'Instansi Pemerintah',
+                'stat_label'  => '60+',
+                'description' => 'Kementerian PUPR (Jateng & Jatim), DPUPR Kab. Sragen, SEKDA Kab. Ngawi, Dinas PU Karanganyar, Disdukcapil Kab. Sukoharjo, dan lainnya.',
+                'sort_order'  => 2,
+            ],
+            [
+                'category'    => 'Instansi Pendidikan',
+                'stat_label'  => '200+',
+                'description' => 'UIN Riau, Yayasan Al Abidin Surakarta, MAN 1 Surakarta, SMK Negeri 6 Surakarta, dan berbagai sekolah negeri/swasta serta jaringan sekolah IT di Indonesia.',
+                'sort_order'  => 3,
+            ],
+        ];
+
+        foreach ($experiences as $e) {
+            DB::table('training_experiences')->updateOrInsert(
+                ['category' => $e['category']],
+                array_merge($e, [
+                    'is_visible' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
+        }
+
         // Blog posts (sample)
         $posts = [
             [

@@ -60,7 +60,7 @@
             </form>
           </td>
           <td>
-            <form method="POST" action="{{ route('admin.partners.destroy', $p) }}" onsubmit="return confirm('Hapus mitra ini?')">
+            <form method="POST" action="{{ route('admin.partners.destroy', $p) }}" data-confirm="Hapus mitra ini?">
               @csrf @method('DELETE')
               <button type="submit" class="btn-danger"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
             </form>

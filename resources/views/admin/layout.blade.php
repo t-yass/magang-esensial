@@ -47,6 +47,16 @@
     .badge-gray { background: #f3f4f6; color: #6b7280; }
     .upload-zone { border: 2px dashed #d1d5db; border-radius: 10px; padding: 28px; text-align: center; background: #f9fafb; cursor: pointer; transition: all 0.2s; }
     .upload-zone:hover { border-color: #04599A; background: #eff6ff; }
+    .preview-box { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; background: #ffffff; box-shadow: 0 10px 30px rgba(15,23,42,0.06); margin-top: 1rem; }
+    .preview-box .preview-thumb { width: 92px; height: 92px; border-radius: 14px; background: #f8fafc; border: 1px solid #e5e7eb; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .preview-box .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-box .preview-info { flex: 1; min-width: 0; }
+    .preview-box .preview-info div { margin-bottom: 0.35rem; }
+    .preview-box .preview-filename { font-size: 0.95rem; font-weight: 600; color: #111827; word-break: break-word; }
+    .preview-box .preview-meta { font-size: 0.82rem; color: #6b7280; }
+    .preview-box .preview-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px; background: #e2e8f0; color: #475569; font-size: 0.95rem; font-weight: 700; }
+    .preview-clear { margin-top: 0.7rem; }
+    .toast-error { background: #991b1b !important; }
     .toggle { position: relative; display: inline-block; width: 42px; height: 24px; }
     .toggle input { opacity: 0; width: 0; height: 0; }
     .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #d1d5db; border-radius: 24px; transition: 0.3s; }
@@ -134,7 +144,7 @@
           <div class="text-white/40 text-xs">{{ Auth::user()->email }}</div>
         </div>
       </div>
-      <form method="POST" action="{{ route('admin.logout') }}">
+      <form method="POST" action="{{ route('admin.logout') }}" data-confirm="Apakah Anda yakin ingin logout?">
         @csrf
         <button type="submit" class="w-full text-left nav-item text-red-300 hover:text-red-200 hover:bg-red-900/20">
           <i data-lucide="log-out" class="w-4 h-4 flex-shrink-0"></i>
@@ -201,13 +211,131 @@
         sb.classList.toggle('collapsed');
       }
     }
-    function showToast(msg) {
+    function showToast(msg, type = 'success') {
       const t = document.getElementById('toast');
-      document.getElementById('toast-msg').textContent = msg;
+      const icon = t.querySelector('i');
+      const text = document.getElementById('toast-msg');
+      text.textContent = msg;
+      t.classList.toggle('toast-error', type === 'error');
+      icon.className = type === 'error' ? 'w-4 h-4 text-red-300' : 'w-4 h-4 text-green-400';
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
+      setTimeout(() => t.classList.remove('show'), 3600);
     }
-    lucide.createIcons();
+    function formatFileSize(bytes) {
+      if (!bytes) return '0 KB';
+      const kb = bytes / 1024;
+      return kb < 1024 ? kb.toFixed(1) + ' KB' : (kb / 1024).toFixed(1) + ' MB';
+    }
+    function createPreviewBox(fileInput) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'preview-box';
+      wrapper.innerHTML = `
+        <div class="flex gap-4 items-center">
+          <div class="preview-thumb">
+            <img class="preview-image hidden" alt="Preview">
+            <div class="preview-icon hidden">FILE</div>
+          </div>
+          <div class="preview-info">
+            <div class="preview-filename">Tidak ada file terpilih</div>
+            <div class="preview-meta">Pilih file untuk melihat preview di sini.</div>
+            <button type="button" class="preview-clear btn-secondary">Hapus pilihan</button>
+          </div>
+        </div>
+      `;
+      const clearButton = wrapper.querySelector('.preview-clear');
+      clearButton.addEventListener('click', () => {
+        fileInput.value = '';
+        updatePreview(fileInput);
+      });
+      wrapper.style.display = 'none';
+      return wrapper;
+    }
+    function updatePreview(fileInput) {
+      const previewBox = fileInput.previewBox;
+      const file = fileInput.files[0];
+      const filenameEl = previewBox.querySelector('.preview-filename');
+      const metaEl = previewBox.querySelector('.preview-meta');
+      const imageEl = previewBox.querySelector('.preview-image');
+      const iconEl = previewBox.querySelector('.preview-icon');
+      if (!file) {
+        previewBox.style.display = 'none';
+        imageEl.classList.add('hidden');
+        iconEl.classList.add('hidden');
+        filenameEl.textContent = 'Tidak ada file terpilih';
+        metaEl.textContent = 'Pilih file untuk melihat preview di sini.';
+        imageEl.src = '';
+        return;
+      }
+      previewBox.style.display = 'block';
+      filenameEl.textContent = file.name;
+      metaEl.textContent = `${file.type || 'Tipe tidak diketahui'} · ${formatFileSize(file.size)}`;
+      imageEl.classList.add('hidden');
+      iconEl.classList.add('hidden');
+      if (file.type.startsWith('image/')) {
+        const objectUrl = URL.createObjectURL(file);
+        imageEl.src = objectUrl;
+        imageEl.onload = () => URL.revokeObjectURL(objectUrl);
+        imageEl.classList.remove('hidden');
+      } else {
+        iconEl.textContent = file.type.startsWith('video/') ? 'VIDEO' : 'FILE';
+        iconEl.classList.remove('hidden');
+      }
+    }
+    function initUploadPreviews() {
+      document.querySelectorAll('input[type="file"]').forEach(fileInput => {
+        if (fileInput.dataset.previewInitialized) return;
+        fileInput.dataset.previewInitialized = '1';
+        const placement = fileInput.closest('label.upload-zone') || fileInput.parentNode;
+        const previewBox = createPreviewBox(fileInput);
+        placement.insertAdjacentElement('afterend', previewBox);
+        fileInput.previewBox = previewBox;
+        fileInput.addEventListener('change', () => updatePreview(fileInput));
+        updatePreview(fileInput);
+        const uploadZone = fileInput.closest('label.upload-zone');
+        if (uploadZone) {
+          uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadZone.classList.add('border-blue-500', 'bg-blue-50');
+          });
+          uploadZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('border-blue-500', 'bg-blue-50');
+          });
+          uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('border-blue-500', 'bg-blue-50');
+            if (e.dataTransfer.files.length > 0) {
+              fileInput.files = e.dataTransfer.files;
+              updatePreview(fileInput);
+            }
+          });
+        }
+      });
+    }
+    function initConfirmDialogs() {
+      document.querySelectorAll('form[data-confirm]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+          if (!confirm(this.dataset.confirm)) {
+            e.preventDefault();
+          }
+        });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      initUploadPreviews();
+      initConfirmDialogs();
+      lucide.createIcons();
+      const adminAlerts = {
+        success: <?php echo json_encode(session('success')); ?>,
+        error: <?php echo json_encode(session('error')); ?>
+      };
+      if (adminAlerts.success) {
+        showToast(adminAlerts.success, 'success');
+      }
+      if (adminAlerts.error) {
+        showToast(adminAlerts.error, 'error');
+      }
+    });
   </script>
   @yield('scripts')
 </body>

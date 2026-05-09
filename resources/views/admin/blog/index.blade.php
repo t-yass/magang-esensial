@@ -79,7 +79,7 @@
           </td>
           <td>
             <div class="flex gap-2">
-              <form method="POST" action="{{ route('admin.blog.destroy', $post) }}" onsubmit="return confirm('Hapus artikel ini?')">
+              <form method="POST" action="{{ route('admin.blog.destroy', $post) }}" data-confirm="Hapus artikel ini?">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn-danger"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
               </form>

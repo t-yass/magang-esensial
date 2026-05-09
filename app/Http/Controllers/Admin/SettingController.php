@@ -87,13 +87,11 @@ public function updateAbout(Request $request)
  
     // ── Sync Certifications ───────────────────────────────────────────────────
     Certification::truncate();
-    $certTitles    = $request->input('cert_titles', []);
-    $certSubtitles = $request->input('cert_subtitles', []);
+    $certTitles = $request->input('cert_titles', []);
     foreach ($certTitles as $i => $title) {
         if (trim($title) === '') continue;
         Certification::create([
             'title'      => $title,
-            'subtitle'   => $certSubtitles[$i] ?? null,
             'sort_order' => $i + 1,
             'is_visible' => true,
         ]);

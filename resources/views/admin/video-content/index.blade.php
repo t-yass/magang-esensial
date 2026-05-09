@@ -85,7 +85,7 @@
               <td>{{ $video->sort_order }}</td>
               <td class="text-right">
                 <div class="flex justify-end gap-2">
-                  <form method="POST" action="{{ route('admin.video-content.destroy', $video) }}" onsubmit="return confirm('Hapus video ini?')">
+                  <form method="POST" action="{{ route('admin.video-content.destroy', $video) }}" data-confirm="Hapus video ini?">
                     @csrf @method('DELETE')
                     <button type="submit" class="btn-danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                   </form>
