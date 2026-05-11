@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    protected $fillable = ['title', 'file_path', 'type', 'category', 'sort_order', 'is_visible'];
+    protected $fillable = ['title', 'file_path', 'type', 'sort_order', 'is_visible'];
 
     protected $casts = ['is_visible' => 'boolean'];
 

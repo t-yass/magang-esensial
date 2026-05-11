@@ -12,10 +12,8 @@ return new class extends Migration {
             $table->enum('section', ['training', 'testimonial'])->default('testimonial');
             $table->enum('source_type', ['link', 'upload'])->default('link');
             $table->string('title')->nullable();
-            $table->text('description')->nullable();
             $table->string('url')->nullable();
             $table->string('file_path')->nullable();
-            $table->integer('sort_order')->default(0);
             $table->boolean('is_visible')->default(true);
             $table->timestamps();
         });

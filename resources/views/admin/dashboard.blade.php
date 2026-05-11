@@ -20,7 +20,7 @@
       <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center"><i data-lucide="newspaper" class="w-4 h-4 text-amber-600"></i></div>
     </div>
     <div class="text-2xl font-bold text-[#072d52]">{{ $stats['posts'] }}</div>
-    <div class="text-xs text-gray-400 font-medium mt-1">Draft: {{ $stats['drafts'] }}</div>
+    <div class="text-xs text-gray-400 font-medium mt-1">Belum dipublikasikan: {{ $stats['unpublished'] }}</div>
   </div>
   <div class="bg-white rounded-2xl p-5 shadow-sm">
     <div class="flex items-center justify-between mb-3">

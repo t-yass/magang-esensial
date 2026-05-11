@@ -12,7 +12,7 @@ class ProgramController extends Controller
 {
     public function index()
     {
-        $programs = Program::orderBy('sort_order')->get();
+        $programs = Program::orderBy('created_at')->get();
         return view('admin.programs.index', compact('programs'));
     }
 
@@ -28,7 +28,6 @@ class ProgramController extends Controller
             'name'        => $request->name,
             'icon'        => $request->icon,
             'description' => $request->description,
-            'sort_order'  => Program::max('sort_order') + 1,
             'is_active'   => true,
         ]);
 

@@ -31,11 +31,32 @@
 
     /* Form elements */
     label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+    input[type="text"], input[type="email"], input[type="tel"], textarea, select, input[type="password"] {
       width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px;
       font-size: 14px; font-family: 'DM Sans', sans-serif; color: #111827;
       background: #fafafa; transition: border-color 0.2s, box-shadow 0.2s; outline: none;
     }
+    .input-with-icon { position: relative; }
+    .input-with-icon input { padding-right: 3rem; }
+    .password-toggle-btn {
+      position: absolute;
+      top: 50%;
+      right: 0.75rem;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: transparent;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      border-radius: 9999px;
+    }
+    .password-toggle-btn:hover { color: #1e3a8a; background: rgba(15,23,42,0.06); }
+    .password-toggle-btn:focus { outline: none; box-shadow: 0 0 0 3px rgba(4,89,154,0.18); }
     input:focus, textarea:focus, select:focus { border-color: #04599A; box-shadow: 0 0 0 3px rgba(4,89,154,0.12); background: white; }
     textarea { resize: vertical; min-height: 90px; }
 
@@ -102,7 +123,7 @@
   <aside class="sidebar flex-shrink-0 flex flex-col" id="sidebar">
     <!-- Brand -->
     <div class="p-5 border-b border-white/10 flex items-center gap-3">
-      <img src="{{ asset('images/logo.JPEG') }}" alt="Logo" width="2225" height="1095" class="h-9 w-auto rounded-lg object-contain flex-shrink-0">
+      <img src="{{ \App\Models\SiteSetting::logoUrl() }}" alt="Logo" width="2225" height="1095" class="h-9 w-auto rounded-lg object-contain flex-shrink-0">
       <div class="brand-text overflow-hidden">
         <div class="font-heading font-bold text-white text-sm leading-tight">ESENSIAL</div>
         <div class="text-[10px] text-blue-300 tracking-widest">ADMIN PANEL</div>
@@ -139,6 +160,10 @@
       <div class="nav-item" onclick="switchPanel('gallery')">
         <i data-lucide="image" class="w-5 h-5 flex-shrink-0"></i>
         <span class="nav-label">Galeri</span>
+      </div>
+      <div class="nav-item" onclick="switchPanel('video')">
+        <i data-lucide="video" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="nav-label">Video</span>
       </div>
       <div class="nav-item" onclick="switchPanel('contact')">
         <i data-lucide="phone" class="w-5 h-5 flex-shrink-0"></i>
@@ -879,15 +904,57 @@
           <div class="grid gap-4 max-w-md">
             <div>
               <label>Password Lama</label>
-              <input type="password" placeholder="••••••••">
+              <div class="input-with-icon">
+                <input id="old-password" type="password" placeholder="••••••••">
+                <button type="button" class="password-toggle-btn" onclick="togglePassword(event, 'old-password')" aria-label="Tampilkan password">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-show">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-hide hidden">
+                    <path d="M17.94 17.94C16.34 19.16 14.25 20 12 20c-7 0-11-8-11-8a21.2 21.2 0 0 1 4.12-5.79" />
+                    <path d="M1 1l22 22" />
+                    <path d="M9.88 9.88A3 3 0 0 0 14.12 14.12" />
+                    <path d="M14.12 9.88A3 3 0 0 0 9.88 14.12" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div>
               <label>Password Baru</label>
-              <input type="password" placeholder="••••••••">
+              <div class="input-with-icon">
+                <input id="new-password" type="password" placeholder="••••••••">
+                <button type="button" class="password-toggle-btn" onclick="togglePassword(event, 'new-password')" aria-label="Tampilkan password">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-show">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-hide hidden">
+                    <path d="M17.94 17.94C16.34 19.16 14.25 20 12 20c-7 0-11-8-11-8a21.2 21.2 0 0 1 4.12-5.79" />
+                    <path d="M1 1l22 22" />
+                    <path d="M9.88 9.88A3 3 0 0 0 14.12 14.12" />
+                    <path d="M14.12 9.88A3 3 0 0 0 9.88 14.12" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div>
               <label>Konfirmasi Password Baru</label>
-              <input type="password" placeholder="••••••••">
+              <div class="input-with-icon">
+                <input id="confirm-password" type="password" placeholder="••••••••">
+                <button type="button" class="password-toggle-btn" onclick="togglePassword(event, 'confirm-password')" aria-label="Tampilkan password">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-show">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 icon-hide hidden">
+                    <path d="M17.94 17.94C16.34 19.16 14.25 20 12 20c-7 0-11-8-11-8a21.2 21.2 0 0 1 4.12-5.79" />
+                    <path d="M1 1l22 22" />
+                    <path d="M9.88 9.88A3 3 0 0 0 14.12 14.12" />
+                    <path d="M14.12 9.88A3 3 0 0 0 9.88 14.12" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
           <button class="btn-primary mt-4" onclick="showToast('Password berhasil diubah!')"><i data-lucide="lock" class="w-4 h-4"></i> Ganti Password</button>
@@ -912,6 +979,7 @@
       partners: 'Mitra / Partner',
       blog: 'Blog & Berita',
       gallery: 'Galeri',
+      video: 'Video',
       contact: 'Kontak',
       settings: 'Pengaturan Tampilan',
       users: 'Manajemen User'
@@ -960,6 +1028,19 @@
     function switchInnerTab(btn, group) {
       document.querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
+    }
+
+    function togglePassword(event, fieldId) {
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+      const button = event.currentTarget;
+      const showIcon = button.querySelector('.icon-show');
+      const hideIcon = button.querySelector('.icon-hide');
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      showIcon?.classList.toggle('hidden', !isHidden);
+      hideIcon?.classList.toggle('hidden', isHidden);
+      button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
     }
 
     lucide.createIcons();

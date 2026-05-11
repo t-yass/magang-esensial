@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Dashboard') – Admin Esensial</title>
+  <link rel="icon" type="image/png" href="{{ \App\Models\SiteSetting::faviconUrl() }}">
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -76,7 +77,7 @@
   <!-- SIDEBAR -->
   <aside class="sidebar flex-shrink-0 flex flex-col" id="sidebar">
     <div class="p-5 border-b border-white/10 flex items-center gap-3">
-      <img src="{{ asset('images/logo.JPEG') }}" alt="Logo" class="h-9 w-auto rounded-lg object-contain flex-shrink-0">
+      <img src="{{ \App\Models\SiteSetting::logoUrl() }}" alt="Logo" class="h-9 w-auto rounded-lg object-contain flex-shrink-0">
       <div class="brand-text overflow-hidden">
         <div class="font-heading font-bold text-white text-sm leading-tight">ESENSIAL</div>
         <div class="text-[10px] text-blue-300 tracking-widest">ADMIN PANEL</div>
@@ -120,7 +121,7 @@
       </a>
       <a href="{{ route('admin.video-content') }}" class="nav-item {{ request()->routeIs('admin.video-content') ? 'active' : '' }}">
         <i data-lucide="video" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-label">Video Training</span>
+        <span class="nav-label">Video</span>
       </a>
       <a href="{{ route('admin.contact') }}" class="nav-item {{ request()->routeIs('admin.contact') ? 'active' : '' }}">
         <i data-lucide="phone" class="w-5 h-5 flex-shrink-0"></i>

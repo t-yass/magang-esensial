@@ -17,9 +17,8 @@ class GalleryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'    => 'nullable|string|max:200',
-            'category' => 'required|string|max:100',
-            'file'     => 'required|file|mimes:jpg,jpeg,png,webp,mp4|max:20480',
+            'title' => 'nullable|string|max:200',
+            'file'  => 'required|file|mimes:jpg,jpeg,png,webp,mp4|max:20480',
         ]);
 
         $file     = $request->file('file');
@@ -31,7 +30,6 @@ class GalleryController extends Controller
             'title'      => $request->title,
             'file_path'  => $path,
             'type'       => $type,
-            'category'   => $request->category,
             'sort_order' => Gallery::max('sort_order') + 1,
             'is_visible' => true,
         ]);

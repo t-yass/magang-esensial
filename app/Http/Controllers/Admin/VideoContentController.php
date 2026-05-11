@@ -11,7 +11,9 @@ class VideoContentController extends Controller
 {
     public function index()
     {
-        $videos = VideoContent::orderBy('section')->orderBy('sort_order')->get();
+        $videos = VideoContent::orderByRaw("CASE WHEN section = 'training' THEN 0 ELSE 1 END")
+            ->orderByDesc('created_at')
+            ->get();
         return view('admin.video-content.index', compact('videos'));
     }
 
@@ -21,10 +23,8 @@ class VideoContentController extends Controller
             'section' => 'required|in:training,testimonial',
             'source_type' => 'required|in:link,upload',
             'title' => 'nullable|string|max:200',
-            'description' => 'nullable|string',
             'url' => 'nullable|required_if:source_type,link|string|max:500',
             'file' => 'nullable|required_if:source_type,upload|file|mimes:mp4,webm,ogv|max:51200',
-            'sort_order' => 'nullable|integer',
             'is_visible' => 'nullable',
         ]);
 
@@ -37,10 +37,8 @@ class VideoContentController extends Controller
             'section' => $request->section,
             'source_type' => $request->source_type,
             'title' => $request->title,
-            'description' => $request->description,
             'url' => $request->source_type === 'link' ? $request->url : null,
             'file_path' => $filePath,
-            'sort_order' => $request->input('sort_order', 0),
             'is_visible' => $request->has('is_visible'),
         ]);
 
@@ -53,10 +51,8 @@ class VideoContentController extends Controller
             'section' => 'required|in:training,testimonial',
             'source_type' => 'required|in:link,upload',
             'title' => 'nullable|string|max:200',
-            'description' => 'nullable|string',
             'url' => 'nullable|required_if:source_type,link|string|max:500',
             'file' => 'nullable|file|mimes:mp4,webm,ogv|max:51200',
-            'sort_order' => 'nullable|integer',
             'is_visible' => 'nullable',
         ]);
 
@@ -70,10 +66,8 @@ class VideoContentController extends Controller
             'section' => $request->section,
             'source_type' => $request->source_type,
             'title' => $request->title,
-            'description' => $request->description,
             'url' => $request->source_type === 'link' ? $request->url : null,
             'file_path' => $filePath,
-            'sort_order' => $request->input('sort_order', 0),
             'is_visible' => $request->has('is_visible'),
         ]);
 

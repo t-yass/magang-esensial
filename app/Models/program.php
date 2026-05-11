@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Program extends Model
 {
-    protected $fillable = ['name', 'icon', 'description', 'sort_order', 'is_active'];
+    protected $fillable = ['name', 'icon', 'description', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',
@@ -14,6 +14,6 @@ class Program extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', true)->orderBy('sort_order');
+        return $query->where('is_active', true)->orderBy('created_at');
     }
 }

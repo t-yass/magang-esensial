@@ -50,4 +50,15 @@ class SiteSetting extends Model
             return static::all()->pluck('value', 'key')->toArray();
         });
     }
+
+    public static function logoUrl(): string
+    {
+        $path = static::get('site_logo');
+        return $path ? asset('storage/' . $path) : asset('images/logo.JPEG');
+    }
+
+    public static function faviconUrl(): string
+    {
+        return static::logoUrl();
+    }
 }

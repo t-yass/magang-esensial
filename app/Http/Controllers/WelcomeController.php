@@ -24,8 +24,8 @@ class WelcomeController extends Controller
     $gallery  = Gallery::visible()->get();
     $certs    = Certification::visible()->get();
     $workshop = WorkshopIntensif::first();
-    $trainings = VideoContent::where('section', 'training')->where('is_visible', true)->orderBy('sort_order')->get();
-    $testimonials = VideoContent::where('section', 'testimonial')->where('is_visible', true)->orderBy('sort_order')->get();
+    $trainings = VideoContent::where('section', 'training')->where('is_visible', true)->orderBy('created_at')->get();
+    $testimonials = VideoContent::where('section', 'testimonial')->where('is_visible', true)->orderBy('created_at')->get();
     $businesses = BusinessOwnership::visible()->orderBy('role')->orderBy('sort_order')->get();
     $experiences = TrainingExperience::visible()->orderBy('sort_order')->get();
     $founderPhoto = asset('images/founder.png');

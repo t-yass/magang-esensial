@@ -3,7 +3,7 @@
 @section('title', 'Tampilan & Font')
 
 @section('content')
-<form method="POST" action="{{ route('admin.appearance.update') }}">
+<form method="POST" action="{{ route('admin.appearance.update') }}" enctype="multipart/form-data">
   @csrf
 
   <div class="form-card">
@@ -72,6 +72,32 @@
         <label>Meta Description</label>
         <textarea name="site_description" style="min-height:70px;">{{ old('site_description', $s['site_description'] ?? '') }}</textarea>
       </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wide">Logo Website</h3>
+    <div class="grid gap-4">
+      <div>
+        <label>Upload Logo</label>
+        <label class="upload-zone block cursor-pointer">
+          <input type="file" name="site_logo" accept="image/png,image/jpeg,image/webp" class="hidden">
+          <i data-lucide="image" class="w-8 h-8 text-gray-400 mx-auto mb-2"></i>
+          <p class="text-sm text-gray-500">Upload logo baru untuk digunakan sebagai favicon dan logo utama.</p>
+          <p class="text-xs text-gray-400 mt-1">Format: PNG, JPG, WebP. Maks 5MB.</p>
+        </label>
+      </div>
+      @if(!empty($s['site_logo']))
+        <div class="preview-box flex items-center gap-4">
+          <div class="preview-thumb">
+            <img src="{{ asset('storage/'.$s['site_logo']) }}" alt="Logo saat ini">
+          </div>
+          <div class="preview-info">
+            <div class="preview-filename">Logo saat ini</div>
+            <div class="preview-meta">{{ basename($s['site_logo']) }}</div>
+          </div>
+        </div>
+      @endif
     </div>
   </div>
 

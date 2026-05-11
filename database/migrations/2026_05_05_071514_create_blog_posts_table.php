@@ -12,10 +12,8 @@ return new class extends Migration {
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('category')->default('Workshop');
-            $table->text('excerpt')->nullable();
             $table->longText('content')->nullable();
             $table->string('thumbnail_path')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

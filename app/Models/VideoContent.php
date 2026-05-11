@@ -10,10 +10,8 @@ class VideoContent extends Model
         'section',
         'source_type',
         'title',
-        'description',
         'url',
         'file_path',
-        'sort_order',
         'is_visible',
     ];
 

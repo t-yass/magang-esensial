@@ -9,6 +9,7 @@ use App\Models\TrainingExperience;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class SettingController extends Controller
 {
@@ -17,17 +18,33 @@ class SettingController extends Controller
     public function hero()
     {
         $s = SiteSetting::all_settings();
-        return view('admin.settings.hero', compact('s'));
+        $ctaLinks = [
+            '#home'    => 'Home',
+            '#about'   => 'About Us',
+            '#program' => 'Program',
+            '#blog'    => 'Blog',
+            '#contact' => 'Hubungi Kami',
+        ];
+
+        return view('admin.settings.hero', compact('s', 'ctaLinks'));
     }
 
     public function updateHero(Request $request)
     {
+        $ctaLinks = [
+            '#home',
+            '#about',
+            '#program',
+            '#blog',
+            '#contact',
+        ];
+
         $request->validate([
             'hero_title'       => 'required|string|max:200',
             'hero_tagline'     => 'required|string|max:200',
             'hero_description' => 'nullable|string',
             'hero_cta_text'    => 'nullable|string|max:100',
-            'hero_cta_link'    => 'nullable|string|max:200',
+            'hero_cta_link'    => ['nullable', 'string', 'max:200', Rule::in($ctaLinks)],
             'founder_photo'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
@@ -174,13 +191,24 @@ public function updateAbout(Request $request)
             'color_text'       => 'required|string|max:20',
             'site_title'       => 'nullable|string|max:200',
             'site_description' => 'nullable|string',
+            'site_logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        SiteSetting::setMany($request->only([
+        $data = $request->only([
             'font_heading', 'font_body', 'font_size',
             'color_primary', 'color_accent', 'color_background', 'color_text',
             'site_title', 'site_description',
-        ]));
+        ]);
+
+        if ($request->hasFile('site_logo')) {
+            $oldLogo = SiteSetting::get('site_logo');
+            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
+                Storage::disk('public')->delete($oldLogo);
+            }
+            $data['site_logo'] = $request->file('site_logo')->store('site', 'public');
+        }
+
+        SiteSetting::setMany($data);
 
         return back()->with('success', 'Pengaturan tampilan berhasil disimpan!');
     }

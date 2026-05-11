@@ -27,7 +27,11 @@
         </div>
         <div>
           <label>Link Tombol CTA</label>
-          <input type="text" name="hero_cta_link" value="{{ old('hero_cta_link', $s['hero_cta_link'] ?? '#program') }}">
+          <select name="hero_cta_link" class="w-full">
+            @foreach($ctaLinks as $value => $label)
+              <option value="{{ $value }}" {{ old('hero_cta_link', $s['hero_cta_link'] ?? '#program') === $value ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+          </select>
         </div>
       </div>
     </div>

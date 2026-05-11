@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->string('file_path');
             $table->enum('type', ['image', 'video'])->default('image');
-            $table->string('category')->default('Workshop');
             $table->integer('sort_order')->default(0);
             $table->boolean('is_visible')->default(true);
             $table->timestamps();

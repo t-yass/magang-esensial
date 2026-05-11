@@ -15,15 +15,9 @@
       <p class="text-xs text-gray-400 mt-1">JPG, PNG, MP4 · maks 20MB</p>
     </label>
     <div class="grid sm:grid-cols-2 gap-4">
-      <div>
+      <div class="sm:col-span-2">
         <label>Keterangan (opsional)</label>
         <input type="text" name="title" placeholder="Keterangan foto/video...">
-      </div>
-      <div>
-        <label>Kategori</label>
-        <select name="category">
-          <option>Workshop</option><option>Training Korporasi</option><option>Training Pemerintah</option><option>Pendidikan</option><option>Event</option>
-        </select>
       </div>
     </div>
     <button type="submit" class="btn-primary mt-4"><i data-lucide="upload" class="w-4 h-4"></i> Upload</button>
@@ -55,7 +49,7 @@
             </form>
           </div>
           <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs px-2 py-1 rounded-b-lg truncate opacity-0 group-hover:opacity-100 transition-opacity">
-            {{ $item->title ?: $item->category }}
+            {{ $item->title ?: 'Media' }}
           </div>
         </div>
       @endforeach

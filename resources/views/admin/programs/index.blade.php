@@ -47,14 +47,18 @@
             <div class="flex gap-2">
               {{-- Edit modal trigger --}}
               <button 
-                class="btn-success"
+                class="btn-success rounded-full p-2.5"
                 data-id="{{ $p->id }}"
                 data-name="{{ $p->name }}"
                 data-icon="{{ $p->icon }}"
                 data-description="{{ $p->description }}"
                 onclick="openEditFromButton(this)"
+                aria-label="Edit Program"
               >
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-emerald-800">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8.5 17.5 3 18l.5-5.5L16.5 3.5z" />
+                </svg>
               </button>
               {{-- Delete --}}
               <form method="POST" action="{{ route('admin.programs.destroy', $p) }}" data-confirm="Hapus program ini?">

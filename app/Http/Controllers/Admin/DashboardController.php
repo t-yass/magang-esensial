@@ -13,11 +13,11 @@ class DashboardController extends Controller
     public function index()
     {
         $stats = [
-            'programs'  => Program::count(),
-            'posts'     => BlogPost::count(),
-            'drafts'    => BlogPost::where('status', 'draft')->count(),
-            'partners'  => Partner::count(),
-            'galleries' => Gallery::count(),
+            'programs'     => Program::count(),
+            'posts'        => BlogPost::count(),
+            'unpublished'  => BlogPost::whereNull('published_at')->count(),
+            'partners'     => Partner::count(),
+            'galleries'    => Gallery::count(),
         ];
 
         return view('admin.dashboard', compact('stats'));

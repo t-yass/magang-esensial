@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $s['site_title'] ?? 'Esensial Training & Consulting' }}</title>
   <meta name="description" content="{{ $s['site_description'] ?? '' }}">
+  <link rel="icon" type="image/png" href="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -39,7 +40,22 @@
 
   <link href="https://fonts.googleapis.com/css2?family={{ $fontQuery }}&display=swap" rel="stylesheet">
 
+  
+
   <style>
+
+  .thumb-img-wrap{
+  position:absolute;
+  inset:0;
+}
+
+.thumb-img-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+
     html,body{height:100%;margin:0}
     *{box-sizing:border-box}
     :root{
@@ -68,10 +84,18 @@
     .animate-fade-up{animation:fadeUp .7s ease forwards;opacity:0}
     .delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
     .delay-4{animation-delay:.4s}.delay-5{animation-delay:.5s}
-    .nav-link{position:relative}
+    .nav-link{position:relative;transition:color .3s ease}
     .nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
-      background:var(--color-primary);transition:width .3s}
+      background:var(--color-primary);transition:width .3s,background .3s}
     .nav-link:hover::after{width:100%}
+    .nav-link.active::after{width:100%}
+    .mobile-nav-link{position:relative;transition:color .3s ease}
+    .mobile-nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+      background:#ffffff;transition:width .3s,background .3s}
+    .mobile-nav-link:hover::after{width:100%}
+    #main-nav:not(.scrolled) .nav-link:hover{color:#052548!important}
+    #main-nav.scrolled .nav-link:hover{color:#ffffff!important}
+    #main-nav.scrolled .nav-link::after,#main-nav.scrolled .nav-link.active::after{background:#ffffff}
     .section-divider{background:linear-gradient(90deg,transparent,rgba(4,89,154,.3),transparent);height:1px}
     .gallery-item{transition:transform .4s,box-shadow .4s}
     .gallery-item:hover{transform:scale(1.03);box-shadow:0 15px 35px rgba(0,0,0,.2)}
@@ -86,6 +110,11 @@
     /* ══════════════════════════════════════════════════
        VIDEO CARD
     ══════════════════════════════════════════════════ */
+    .video-card{
+      transform:translateZ(0);
+      transition:transform .35s ease,box-shadow .35s ease;
+    }
+    .video-card:hover{transform:translateY(-4px)}
     .video-card-thumb{
       position:relative;width:100%;aspect-ratio:3/4;
       overflow:hidden;background:#0a1628;display:block;
@@ -95,9 +124,10 @@
     .video-card-thumb .thumb-media{
       position:absolute;inset:0;width:100%;height:100%;
       object-fit:cover;object-position:center top;
-      transition:transform .5s ease;
+      filter:brightness(.96);
+      transition:transform .5s ease,filter .4s ease;
     }
-    .video-card:hover .thumb-media{transform:scale(1.05)}
+    .video-card:hover .thumb-media{transform:scale(1.08);filter:brightness(1)}
 
     /* ── Instagram placeholder ── */
     .ig-placeholder{
@@ -151,14 +181,14 @@
     #video-modal{
       position:fixed;inset:0;z-index:9999;
       display:flex;align-items:center;justify-content:center;padding:12px;
-      background:rgba(0,0,0,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      background:rgba(3,15,42,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
       opacity:0;pointer-events:none;transition:opacity .25s ease;
     }
     #video-modal.modal-open{opacity:1;pointer-events:auto}
     #modal-box{
-      position:relative;width:100%;max-width:420px;
+      position:relative;width:min(100%,920px);max-width:920px;
       max-height:calc(100dvh - 24px);background:#0a1628;
-      border-radius:16px;overflow:hidden;
+      border-radius:18px;overflow:hidden;
       display:flex;flex-direction:column;
       box-shadow:0 32px 80px rgba(0,0,0,.8);
       transform:scale(.92) translateY(8px);opacity:0;
@@ -173,6 +203,14 @@
       background:#000;max-height:calc(100dvh - 90px);min-height:160px;
     }
     #modal-video-container{position:relative;background:#000}
+    #modal-video-container.vc-instagram-fallback {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 9/16;
+      background: #0a1628;
+      display: flex;
+      flex-direction: column;
+    }
     #modal-video-container.vc-portrait{
       height:min(calc(100dvh - 90px),75vh);
       aspect-ratio:9/16;width:auto;max-width:100%;
@@ -228,7 +266,7 @@
             $igShortcode=igShortcode($rawUrl);
           }else{$embedUrl=$rawUrl;}
         @endphp
-        {type:"{{$videoType}}",url:"{{addslashes($embedUrl)}}",
+        {type:"{{$videoType}}",url:"{{addslashes($embedUrl)}}",originalUrl:"{{ $rawUrl }}",
          igShortcode:"{{$igShortcode}}",
          igThumb:"{{$igShortcode ? igThumb($igShortcode) : ''}}",
          title:"{{addslashes($video->title??'Video Training '.$loop->iteration)}}",
@@ -254,7 +292,7 @@
             $igShortcode=igShortcode($rawUrl);
           }else{$embedUrl=$rawUrl;}
         @endphp
-        {type:"{{$videoType}}",url:"{{addslashes($embedUrl)}}",
+        {type:"{{$videoType}}",url:"{{addslashes($embedUrl)}}",originalUrl:"{{ $rawUrl }}",
          igShortcode:"{{$igShortcode}}",
          igThumb:"{{$igShortcode ? igThumb($igShortcode) : ''}}",
          title:"{{addslashes($video->title??'Testimoni '.$loop->iteration)}}",
@@ -357,57 +395,57 @@
        2. Jika error (CORS/403) → tampilkan branded IG placeholder
     ──────────────────────────────────────────────────────── */
     function loadIgThumbs(){
-      document.querySelectorAll('.ig-thumb-target').forEach(container=>{
-        const thumbUrl=container.dataset.igThumb;
-        const shortcode=container.dataset.igShortcode;
-        const placeholder=container.querySelector('.ig-placeholder');
-        const shortEl=container.querySelector('.ig-shortcode');
+  document.querySelectorAll('.ig-thumb-target').forEach(container=>{
+    const thumbUrl=container.dataset.igThumb;
+    const shortcode=container.dataset.igShortcode;
+    const placeholder=container.querySelector('.ig-placeholder');
+    const shortEl=container.querySelector('.ig-shortcode');
 
-        if(!thumbUrl){
-          // Tidak ada URL — pastikan placeholder tampil dengan shortcode
-          if(shortEl&&shortcode)shortEl.textContent='/reel/'+shortcode;
-          if(placeholder)placeholder.classList.remove('ig-loading');
-          return;
-        }
-
-        // Coba load gambar CDN Instagram
-        const img=new Image();
-        img.crossOrigin='anonymous';
-
-        img.onload=function(){
-          // Berhasil! Tampilkan gambar, sembunyikan placeholder
-          const wrap=document.createElement('div');
-          wrap.className='thumb-img-wrap';
-          const imgEl=document.createElement('img');
-          imgEl.src=thumbUrl;
-          imgEl.alt='Instagram preview';
-          imgEl.style.cssText='width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .5s ease';
-          wrap.appendChild(imgEl);
-          container.insertBefore(wrap,container.firstChild);
-          if(placeholder){
-            placeholder.style.transition='opacity .4s';
-            placeholder.style.opacity='0';
-            setTimeout(()=>placeholder.remove(),400);
-          }
-        };
-
-        img.onerror=function(){
-          // Gagal load → tampilkan placeholder IG yang menarik
-          if(shortEl&&shortcode)shortEl.textContent='/reel/'+shortcode.slice(0,10)+'…';
-          if(placeholder)placeholder.classList.remove('ig-loading');
-        };
-
-        img.src=thumbUrl;
-        // Timeout 4 detik → fallback
-        setTimeout(()=>{
-          if(!img.complete||img.naturalWidth===0){
-            img.src='';
-            if(shortEl&&shortcode)shortEl.textContent='/reel/'+shortcode.slice(0,10)+'…';
-            if(placeholder)placeholder.classList.remove('ig-loading');
-          }
-        },4000);
-      });
+    if(!shortcode){
+      if(placeholder) placeholder.classList.remove('ig-loading');
+      return;
     }
+
+    // Pakai thumbnail via noembed + embed Instagram
+    const imgUrl = `https://images.weserv.nl/?url=instagram.com/p/${shortcode}/media/?size=l`;
+
+    const img = new Image();
+
+    img.onload = function(){
+      const wrap=document.createElement('div');
+      wrap.className='thumb-img-wrap';
+
+      const imgEl=document.createElement('img');
+      imgEl.src=imgUrl;
+      imgEl.alt='Instagram preview';
+
+      wrap.appendChild(imgEl);
+
+      container.insertBefore(wrap,container.firstChild);
+
+      if(placeholder){
+        placeholder.style.transition='opacity .3s';
+        placeholder.style.opacity='0';
+
+        setTimeout(()=>{
+          placeholder.remove();
+        },300);
+      }
+    };
+
+    img.onerror = function(){
+      if(shortEl && shortcode){
+        shortEl.textContent='/reel/'+shortcode;
+      }
+
+      if(placeholder){
+        placeholder.classList.remove('ig-loading');
+      }
+    };
+
+    img.src = imgUrl;
+  });
+}
 
     /* ── MODAL ───────────────────────────────────────────── */
     let currentOpen=null;
@@ -428,7 +466,22 @@
       container.className=isLandscape?'vc-landscape':'vc-portrait';
       box.removeAttribute('class');
       if(isLandscape)box.classList.add('modal-landscape');
-      if(data.type==='local'){
+      if(data.type==='instagram'){
+        container.className='vc-instagram-fallback';
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center p-8 text-center h-full bg-gradient-to-b from-navy-800 to-black">
+            <div class="w-20 h-20 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-3xl flex items-center justify-center shadow-2xl mb-6">
+              <i data-lucide="instagram" class="w-10 h-10 text-white"></i>
+            </div>
+            <h3 class="text-white font-bold text-xl mb-2">Tonton di Instagram</h3>
+            <p class="text-white/50 text-sm mb-8 max-w-[240px]">Instagram membatasi pemutaran video langsung di dalam website lain.</p>
+            <a href="${data.originalUrl}" target="_blank" class="w-full py-4 bg-[#04599A] text-white font-bold rounded-xl hover:bg-blue-600 transition-all flex items-center justify-center gap-2 shadow-lg">
+              Buka di Instagram <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+          </div>
+        `;
+        lucide.createIcons();
+      } else if(data.type==='local'){
         const vid=document.createElement('video');
         vid.src=data.url;vid.controls=true;vid.autoplay=true;
         vid.id='modal-active-video';
@@ -491,10 +544,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
         <div class="flex items-center gap-3">
-          <img src="{{ asset('images/logo.JPEG') }}" alt="Logo" class="h-10 w-auto sm:h-12 rounded-lg object-contain">
+          <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-10 w-auto sm:h-12 rounded-lg object-contain">
           <div class="hidden sm:block">
             <div class="font-heading font-bold text-sm text-white transition-colors duration-300" id="nav-brand">ESENSIAL</div>
-            <div id="nav-tagline" class="text-[10px] text-sky-200 tracking-widest">TRAINING & CONSULTING</div>
+            <div id="nav-tagline" class="text-[10px] text-navy-900 tracking-widest transition-colors duration-300">TRAINING & CONSULTING</div>
           </div>
         </div>
         <div class="hidden md:flex items-center gap-8">
@@ -557,7 +610,7 @@
               <img src="{{ $founderPhoto }}" alt="{{ $s['founder_name'] ?? 'Founder' }}" class="h-full w-auto object-contain">
             </div>
             <div class="absolute -top-10 -right-10 w-24 bg-white p-3 rounded-xl shadow-2xl z-20 animate-fade-up delay-5 border border-navy-900/5">
-              <img src="{{ asset('images/logo.JPEG') }}" alt="Logo" class="w-full h-auto object-contain">
+              <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="w-full h-auto object-contain">
             </div>
           </div>
         </div>
@@ -626,10 +679,10 @@
   <section style="background:var(--color-primary);" class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-center text-white/40 text-sm tracking-widest uppercase mb-8">Dipercaya Oleh Berbagai Instansi</p>
-      <div class="flex justify-center gap-4 overflow-x-auto hide-scrollbar pb-4 scroll-smooth">
-        <div class="flex gap-4 flex-shrink-0 snap-x snap-mandatory">
+      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth">
+        <div class="inline-flex gap-4 snap-x snap-mandatory pl-2 sm:pl-4">
           @foreach($partners as $partner)
-            <div class="partner-logo rounded-xl h-20 w-32 flex items-center justify-center shadow-sm overflow-hidden flex-shrink-0 snap-center">
+            <div class="partner-logo rounded-xl h-20 w-32 flex items-center justify-center shadow-sm overflow-hidden flex-none snap-center">
               @if($partner->logo_path)
                 <img src="{{ asset('storage/'.$partner->logo_path) }}" alt="{{ $partner->name }}" class="h-12 w-auto object-contain px-2">
               @else
@@ -687,7 +740,7 @@
     } else {
       $embedUrl = $rawUrl;
     }
-    return compact('isUpload','embedUrl','thumbUrl','videoType','igShortcode');
+      return compact('isUpload','embedUrl','thumbUrl','videoType','igShortcode','rawUrl');
   }
   @endphp
 
@@ -709,9 +762,9 @@
 
                 <div class="video-card flex-none w-[220px] sm:w-[260px] rounded-xl overflow-hidden
                              bg-white border border-navy-900/8 shadow-lg hover:shadow-xl
-                             transition-shadow duration-300 group" data-index="{{ $index }}">
+                             transition duration-300 ease-out group" data-index="{{ $index }}">
 
-                  <button class="video-card-thumb"
+                  <button type="button" class="video-card-thumb"
                           onclick="openVideoModal('training',{{ $index }})"
                           aria-label="Putar video {{ $video->title ?? 'Training '.($index+1) }}">
 
@@ -824,9 +877,9 @@
 
                 <div class="video-card flex-none w-[220px] sm:w-[260px] rounded-xl overflow-hidden
                              bg-white border border-navy-900/8 shadow-lg hover:shadow-xl
-                             transition-shadow duration-300 group" data-index="{{ $index }}">
+                             transition duration-300 ease-out group" data-index="{{ $index }}">
 
-                  <button class="video-card-thumb"
+                  <button type="button" class="video-card-thumb"
                           onclick="openVideoModal('testimonial',{{ $index }})"
                           aria-label="Putar testimoni {{ $video->title ?? 'Testimoni '.($index+1) }}">
 
@@ -1048,9 +1101,9 @@
         <button class="tab-btn px-6 py-2.5 rounded-lg font-semibold text-sm border transition-all bg-white text-navy-900 border-[var(--color-primary)]" data-tab="gallery" onclick="switchTab('gallery',this)">Gallery</button>
       </div>
       <div id="tab-news">
-        <div class="flex justify-center gap-6 overflow-x-auto hide-scrollbar pb-4 snap-x snap-mandatory scroll-smooth">
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           @foreach($posts as $post)
-            <article class="flex-none w-[min(100%,320px)] max-w-[320px] bg-white rounded-xl overflow-hidden border border-navy-900/5 hover:border-blue-500/20 transition-colors shadow-md snap-start">
+            <article class="bg-white rounded-3xl overflow-hidden border border-navy-900/5 hover:border-blue-500/20 transition-colors shadow-md">
               @if($post->thumbnail_path)
                 <img src="{{ asset('storage/'.$post->thumbnail_path) }}" alt="{{ $post->title }}" class="h-44 w-full object-cover">
               @else
@@ -1059,12 +1112,19 @@
                 </div>
               @endif
               <div class="p-5">
-                <span class="text-blue-600 text-xs font-bold uppercase tracking-wider">{{ $post->category }}</span>
-                <h4 class="font-heading font-bold mt-2 mb-2 text-navy-900">{{ $post->title }}</h4>
-                <p class="text-gray-600 text-sm line-clamp-2">{{ $post->excerpt }}</p>
+                <div class="flex items-center justify-between gap-3 mb-3">
+                  <span class="text-blue-600 text-xs font-bold uppercase tracking-wider">{{ $post->category }}</span>
+                  <span class="text-gray-400 text-xs">{{ $post->display_date ?? $post->created_at->format('d M Y') }}</span>
+                </div>
+                <h4 class="font-heading font-bold mt-2 mb-3 text-navy-900">{{ $post->title }}</h4>
+                <p class="text-gray-600 text-sm mb-5">{{ $post->excerpt }}</p>
+                <a href="{{ route('blog.show', $post->slug) }}" class="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600 transition">Baca Selengkapnya</a>
               </div>
             </article>
           @endforeach
+        </div>
+        <div class="mt-10 text-center">
+          <a href="{{ route('blog.index') }}" class="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-[var(--color-primary)] border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition">Lihat Semua Berita</a>
         </div>
       </div>
       <div id="tab-gallery" class="hidden space-y-8">
@@ -1137,7 +1197,7 @@
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
         <div>
           <div class="flex items-center gap-3 mb-4">
-            <img src="{{ asset('images/logo.JPEG') }}" alt="Logo" class="h-10 w-auto rounded-lg object-contain">
+            <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-10 w-auto rounded-lg object-contain">
             <div>
               <div class="font-heading font-bold text-sm">ESENSIAL TRAINING & CONSULTING</div>
               <div class="text-xs tracking-wider text-sky-400">Professional Skills Excellent</div>
@@ -1175,7 +1235,8 @@
     document.getElementById('mobile-menu-btn').addEventListener('click',()=>document.getElementById('mobile-menu').classList.add('open'));
     document.getElementById('mobile-close-btn').addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open'));
     document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobile-menu').classList.remove('open')));
-    window.addEventListener('scroll',()=>{
+
+    function updateNavbarState(){
       const nav=document.getElementById('main-nav');
       const brand=document.getElementById('nav-brand');
       const tagline=document.getElementById('nav-tagline');
@@ -1183,17 +1244,22 @@
       const links=document.querySelectorAll('.nav-link');
       const mBtn=document.getElementById('mobile-menu-btn');
       if(window.scrollY>50){
+        nav.classList.add('scrolled');
         nav.style.background='rgba(4,89,154,.95)';nav.style.backdropFilter='blur(12px)';nav.style.boxShadow='0 2px 20px rgba(0,0,0,.3)';
-        brand?.classList.replace('text-navy-900','text-white');tagline?.classList.replace('text-blue-600','text-white/80');
+        brand?.classList.replace('text-navy-900','text-white');tagline?.classList.replace('text-navy-900','text-white/80');
         cBtn?.classList.replace('border-blue-600','border-white');cBtn?.classList.replace('text-blue-600','text-white');
         mBtn?.classList.replace('text-navy-900','text-white');links.forEach(l=>l.classList.replace('text-navy-900/80','text-white/80'));
       }else{
+        nav.classList.remove('scrolled');
         nav.style.background='transparent';nav.style.backdropFilter='none';nav.style.boxShadow='none';
-        brand?.classList.replace('text-white','text-navy-900');tagline?.classList.replace('text-white/80','text-blue-600');
+        brand?.classList.replace('text-white','text-navy-900');tagline?.classList.replace('text-white/80','text-navy-900');
         cBtn?.classList.replace('border-white','border-blue-600');cBtn?.classList.replace('text-white','text-blue-600');
         mBtn?.classList.replace('text-white','text-navy-900');links.forEach(l=>l.classList.replace('text-white/80','text-navy-900/80'));
       }
-    });
+    }
+
+    window.addEventListener('scroll', updateNavbarState);
+    window.addEventListener('load', updateNavbarState);
     lucide.createIcons();
   </script>
 </body>

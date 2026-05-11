@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\PublicBlogController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 // ── Public ────────────────────────────────────────────────
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/blog', [PublicBlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [PublicBlogController::class, 'show'])->name('blog.show');
 
 // ── Admin Auth ────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
