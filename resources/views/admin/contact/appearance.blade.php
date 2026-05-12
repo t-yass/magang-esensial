@@ -37,31 +37,6 @@
   </div>
 
   <div class="form-card">
-    <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wide">Warna Brand</h3>
-    <div class="grid sm:grid-cols-2 gap-4">
-      @foreach([
-        ['color_primary',    'Warna Utama (Primary)',    '#04599A'],
-        ['color_accent',     'Warna Aksen',              '#d4af37'],
-        ['color_background', 'Warna Background',         '#072d52'],
-        ['color_text',       'Warna Teks',               '#ffffff'],
-      ] as [$key, $label, $default])
-        <div>
-          <label>{{ $label }}</label>
-          <div class="flex gap-2">
-            <input type="color" name="{{ $key }}_picker" value="{{ $s[$key] ?? $default }}"
-              oninput="document.getElementById('txt_{{ $key }}').value=this.value"
-              style="width:42px;height:38px;padding:2px;border-radius:8px;border:1.5px solid #e5e7eb;cursor:pointer;flex-shrink:0;">
-            <input type="text" name="{{ $key }}" id="txt_{{ $key }}"
-              value="{{ old($key, $s[$key] ?? $default) }}"
-              oninput="this.previousElementSibling.value=this.value"
-              style="flex:1;">
-          </div>
-        </div>
-      @endforeach
-    </div>
-  </div>
-
-  <div class="form-card">
     <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wide">SEO & Meta</h3>
     <div class="grid gap-4">
       <div>

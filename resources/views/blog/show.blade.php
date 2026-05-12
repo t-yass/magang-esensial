@@ -15,12 +15,6 @@
     $fontBody     = $s['font_body']    ?? 'DM Sans';
     $fontSize     = (int)($s['font_size'] ?? 16);
     $fontQuery    = urlencode($fontHeading).':wght@400;700;900&family='.urlencode($fontBody).':wght@300;400;500;600;700';
-    $colorPrimary = $s['color_primary']    ?? '#04599A';
-    $colorAccent  = $s['color_accent']     ?? '#d4af37';
-    $colorBg      = $s['color_background'] ?? '#072d52';
-    $colorNavbar  = $s['navbar_color']     ?? $colorPrimary;
-    $colorFooter  = $s['footer_color']     ?? $colorBg;
-    $colorText    = $s['color_text']       ?? '#ffffff';
   @endphp
 
   <link href="https://fonts.googleapis.com/css2?family={{ $fontQuery }}&display=swap" rel="stylesheet">
@@ -29,12 +23,12 @@
     html,body{height:100%;margin:0}
     *{box-sizing:border-box}
     :root{
-      --color-primary:{{ $colorPrimary }};
-      --color-accent:{{ $colorAccent }};
-      --color-bg:{{ $colorBg }};
-      --color-navbar:{{ $colorNavbar }};
-      --color-footer:{{ $colorFooter }};
-      --color-text:{{ $colorText }};
+      --color-primary:#04599A;
+      --color-accent:#d4af37;
+      --color-bg:#04599A;
+      --color-navbar:#04599A;
+      --color-footer:#072d52;
+      --color-text:#ffffff;
       --font-heading:'{{ $fontHeading }}',Georgia,serif;
       --font-body:'{{ $fontBody }}',sans-serif;
       --font-size-base:{{ $fontSize }}px;
@@ -85,7 +79,7 @@
     .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;
       padding:.85rem 1.4rem;border-radius:999px;background:var(--color-primary);color:#ffffff;
       font-weight:700;transition:background .25s}
-    .btn-primary:hover{background:#033d6c}
+    .btn-primary:hover{background:#0d4d7c}
     .badge{display:inline-flex;align-items:center;justify-content:center;padding:.35rem .75rem;
       border-radius:999px;font-size:.75rem;font-weight:700}
     .badge-blue{background:#e0f2fe;color:#0369a1}
@@ -98,20 +92,27 @@
     #blog-nav.scrolled{background:var(--color-navbar)}
     #blog-nav .nav-link{color:#ffffff;transition:color .3s ease}
     #blog-nav:not(.scrolled) .nav-link{color:#051f3a}
-    #blog-nav .nav-link.opacity-0{opacity:0}
+    #blog-nav .nav-link.opacity-0{opacity:1}
     #blog-nav.scrolled .nav-link.opacity-0{opacity:1}
+    
+    /* Back button styling */
+    .btn-back-home{background:transparent;border-color:#154a7c;color:#154a7c;transition:all .3s ease}
+    .btn-back-home:hover{background:#154a7c;border-color:#154a7c;color:#ffffff}
+    #blog-nav.scrolled .btn-back-home{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.4);color:#ffffff}
+    #blog-nav.scrolled .btn-back-home:hover{background:rgba(255,255,255,0.3)}
   </style>
 </head>
 <body>
   <nav id="blog-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
-        <a id="blog-nav-back" href="{{ route('home') }}#blog" class="inline-flex items-center text-sm font-medium nav-link tracking-wide hover:opacity-80 transition-opacity">
-          <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          <span>Kembali</span>
+        <a id="blog-nav-back" href="{{ route('home') }}#blog" class="btn-back-home inline-flex items-center gap-2 px-3 sm:px-6 py-2 sm:py-2.5 border rounded-lg font-medium text-xs sm:text-sm transition-all duration-300 backdrop-blur-sm">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Kembali ke Beranda</span>
+          <span class="sm:hidden">Kembali</span>
         </a>
         <div class="flex items-center gap-2">
-          <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-8 w-auto rounded-lg object-contain nav-link opacity-0 sm:opacity-100 transition-opacity duration-300">
+          <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-8 w-auto rounded-lg object-contain nav-link sm:opacity-100 transition-opacity duration-300">
         </div>
       </div>
     </div>

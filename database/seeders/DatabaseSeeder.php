@@ -45,10 +45,6 @@ class DatabaseSeeder extends Seeder
             'font_heading'     => 'Playfair Display',
             'font_body'        => 'DM Sans',
             'font_size'        => '16',
-            'color_primary'    => '#04599A',
-            'color_accent'     => '#0ea5e9',
-            'color_background' => '#072d52',
-            'color_text'       => '#ffffff',
             // SEO
             'site_title'       => 'Esensial Training & Consulting',
             'site_description' => 'Lembaga jasa pelatihan profesional yang melayani berbagai instansi mulai dari swasta hingga perusahaan.',

@@ -185,27 +185,40 @@ public function updateAbout(Request $request)
             'font_heading'     => 'required|string|max:100',
             'font_body'        => 'required|string|max:100',
             'font_size'        => 'required|integer|min:12|max:24',
-            'color_primary'    => 'required|string|max:20',
-            'color_accent'     => 'required|string|max:20',
-            'color_background' => 'required|string|max:20',
-            'color_text'       => 'required|string|max:20',
-            'site_title'       => 'nullable|string|max:200',
+                'site_title'       => 'nullable|string|max:200',
             'site_description' => 'nullable|string',
             'site_logo'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'site_logo_crop'   => 'nullable|string',
         ]);
 
         $data = $request->only([
             'font_heading', 'font_body', 'font_size',
-            'color_primary', 'color_accent', 'color_background', 'color_text',
             'site_title', 'site_description',
         ]);
 
-        if ($request->hasFile('site_logo')) {
+        $newLogoPath = null;
+        if ($request->filled('site_logo_crop')) {
+            $cropData = $request->input('site_logo_crop');
+            $dataUri = preg_replace('#^data:image/\w+;base64,#i', '', $cropData);
+            $imageData = base64_decode($dataUri);
+            if ($imageData !== false) {
+                $extension = 'png';
+                if (preg_match('#^data:image/(\w+);base64,#i', $cropData, $matches)) {
+                    $extension = strtolower($matches[1]) === 'jpeg' ? 'jpg' : strtolower($matches[1]);
+                }
+                $newLogoPath = 'site/logo-' . uniqid() . '.' . $extension;
+                Storage::disk('public')->put($newLogoPath, $imageData);
+            }
+        } elseif ($request->hasFile('site_logo')) {
+            $newLogoPath = $request->file('site_logo')->store('site', 'public');
+        }
+
+        if ($newLogoPath) {
             $oldLogo = SiteSetting::get('site_logo');
             if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
                 Storage::disk('public')->delete($oldLogo);
             }
-            $data['site_logo'] = $request->file('site_logo')->store('site', 'public');
+            $data['site_logo'] = $newLogoPath;
         }
 
         SiteSetting::setMany($data);

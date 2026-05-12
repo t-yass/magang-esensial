@@ -25,6 +25,15 @@
       ? asset('storage/'.$s['founder_photo'])
       : asset('images/founder.png');
 
+    /* ── Helper: mailto link profesional ── */
+    $contactEmail   = $s['contact_email'] ?? 'esensialtraining@gmail.com';
+    $mailtoSubject  = rawurlencode('Konsultasi & Informasi – Esensial Training');
+    $mailtoBody     = rawurlencode(
+      "Halo, saya ingin bertanya mengenai layanan pelatihan Esensial Training & Consulting.\n\n" .
+      "Nama saya: \nInstansi: \nKebutuhan: \n\nTerima kasih."
+    );
+    $mailtoLink = "mailto:{$contactEmail}?subject={$mailtoSubject}&body={$mailtoBody}";
+
     /* ── Helper: ekstrak shortcode dari URL Instagram ── */
     function igShortcode(string $url): string {
       preg_match('#instagram\.com/(?:p|reel|tv)/([A-Za-z0-9_-]+)#', $url, $m);
@@ -40,21 +49,19 @@
 
   <link href="https://fonts.googleapis.com/css2?family={{ $fontQuery }}&display=swap" rel="stylesheet">
 
-  
-
   <style>
 
   .thumb-img-wrap{
-  position:absolute;
-  inset:0;
-}
+    position:absolute;
+    inset:0;
+  }
 
-.thumb-img-wrap img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-}
+  .thumb-img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
 
     html,body{height:100%;margin:0}
     *{box-sizing:border-box}
@@ -120,7 +127,6 @@
       overflow:hidden;background:#0a1628;display:block;
       cursor:pointer;border:none;padding:0;
     }
-    /* Semua media di dalam thumb */
     .video-card-thumb .thumb-media{
       position:absolute;inset:0;width:100%;height:100%;
       object-fit:cover;object-position:center top;
@@ -141,25 +147,17 @@
       display:flex;align-items:center;justify-content:center;
       box-shadow:0 8px 32px rgba(238,42,123,.5);
     }
-    .ig-placeholder-text{
-      text-align:center;
-    }
-    .ig-placeholder-text .ig-title{
-      color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;
-    }
-    .ig-placeholder-text .ig-sub{
-      color:rgba(255,255,255,.45);font-size:11px;margin-top:3px;
-    }
-    /* Shimmer animasi saat loading */
+    .ig-placeholder-text{text-align:center;}
+    .ig-placeholder-text .ig-title{color:#fff;font-size:13px;font-weight:700;letter-spacing:.01em;}
+    .ig-placeholder-text .ig-sub{color:rgba(255,255,255,.45);font-size:11px;margin-top:3px;}
     @keyframes igPulse{0%,100%{opacity:.5}50%{opacity:1}}
     .ig-loading .ig-logo-ring{animation:igPulse 1.5s ease-in-out infinite}
 
-    /* ── Thumbnail berhasil dimuat ── */
     .thumb-img-wrap{position:absolute;inset:0}
     .thumb-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top}
 
     /* ══════════════════════════════════════════════════
-       CAROUSEL — auto-center jika card sedikit
+       CAROUSEL
     ══════════════════════════════════════════════════ */
     .carousel-outer{overflow:hidden}
     .carousel-track{
@@ -168,12 +166,7 @@
       will-change:transform;cursor:grab;user-select:none;
     }
     .carousel-track:active{cursor:grabbing}
-    /* center mode — ditambah JS */
-    .carousel-track.centered{
-      justify-content:center;
-      transform:none!important;
-      cursor:default;
-    }
+    .carousel-track.centered{justify-content:center;transform:none!important;cursor:default;}
 
     /* ══════════════════════════════════════════════════
        VIDEO MODAL
@@ -203,13 +196,9 @@
       background:#000;max-height:calc(100dvh - 90px);min-height:160px;
     }
     #modal-video-container{position:relative;background:#000}
-    #modal-video-container.vc-instagram-fallback {
-      width: 100%;
-      max-width: 400px;
-      aspect-ratio: 9/16;
-      background: #0a1628;
-      display: flex;
-      flex-direction: column;
+    #modal-video-container.vc-instagram-fallback{
+      width:100%;max-width:400px;aspect-ratio:9/16;
+      background:#0a1628;display:flex;flex-direction:column;
     }
     #modal-video-container.vc-portrait{
       height:min(calc(100dvh - 90px),75vh);
@@ -232,6 +221,39 @@
       #modal-box{border-radius:12px}
       #modal-video-container.vc-portrait{height:min(calc(100dvh - 72px),82vh)}
     }
+
+    /* ══════════════════════════════════════════════════
+       MAILTO CONTACT CARD — efek khusus untuk email
+    ══════════════════════════════════════════════════ */
+    .contact-card-email{
+      position:relative;
+      overflow:hidden;
+    }
+    .contact-card-email::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg,rgba(4,89,154,.06),rgba(4,89,154,.02));
+      opacity:0;
+      transition:opacity .3s ease;
+      pointer-events:none;
+    }
+    .contact-card-email:hover::after{opacity:1;}
+
+    /* Footer mailto link */
+    .footer-email-link{
+      color:inherit;
+      text-decoration:none;
+      transition:color .25s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .footer-email-link:hover{
+      color:rgba(255,255,255,.85) !important;
+      text-decoration:underline;
+      text-underline-offset:3px;
+    }
   </style>
 
   <script>
@@ -250,9 +272,11 @@
       training:[
         @foreach($trainings as $video)
         @php
+          $isUpload=$video->source_type==='upload'&&$video->file_path;
           $rawUrl=$video->url??'';
           $embedUrl='';$videoType='external';$igShortcode='';
-          if(str_contains($rawUrl,'youtu')){
+          if($isUpload){$videoType='local';$embedUrl=asset('storage/'.$video->file_path);}
+          elseif(str_contains($rawUrl,'youtu')){
             $videoType='youtube';
             preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/',$rawUrl,$m);
             $ytId=$m[1]??'';
@@ -260,7 +284,6 @@
           }elseif(str_contains($rawUrl,'instagram.com')){
             $videoType='instagram';
             $embedUrl=rtrim(strtok($rawUrl,'?'),'/').'\/embed';
-            // $rawUrl is already the original URL here
             $igShortcode=igShortcode($rawUrl);
           }else{$embedUrl=$rawUrl;}
         @endphp
@@ -274,9 +297,11 @@
       testimonial:[
         @foreach($testimonials as $video)
         @php
+          $isUpload=$video->source_type==='upload'&&$video->file_path;
           $rawUrl=$video->url??'';
           $embedUrl='';$videoType='external';$igShortcode='';
-          if(str_contains($rawUrl,'youtu')){
+          if($isUpload){$videoType='local';$embedUrl=asset('storage/'.$video->file_path);}
+          elseif(str_contains($rawUrl,'youtu')){
             $videoType='youtube';
             preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/',$rawUrl,$m);
             $ytId=$m[1]??'';
@@ -284,7 +309,6 @@
           }elseif(str_contains($rawUrl,'instagram.com')){
             $videoType='instagram';
             $embedUrl=rtrim(strtok($rawUrl,'?'),'/').'\/embed';
-            // $rawUrl is already the original URL here
             $igShortcode=igShortcode($rawUrl);
           }else{$embedUrl=$rawUrl;}
         @endphp
@@ -324,11 +348,7 @@
       }
 
       function cardW(){return(cards[0]?.offsetWidth||260)+GAP}
-
-      function isCentered(){
-        if(!outer)return false;
-        return(count*cardW()-GAP)<=outer.offsetWidth;
-      }
+      function isCentered(){if(!outer)return false;return(count*cardW()-GAP)<=outer.offsetWidth;}
 
       function paint(){
         if(isCentered()){
@@ -385,63 +405,45 @@
       c.goTo(c.getIdx()+dir);
     };
 
-    /* ── INSTAGRAM THUMBNAIL LOADER ─────────────────────────
-       Strategi bertingkat:
-       1. Coba load thumbnail CDN Instagram via <img>
-       2. Jika error (CORS/403) → tampilkan branded IG placeholder
-    ──────────────────────────────────────────────────────── */
+    /* ── INSTAGRAM THUMBNAIL LOADER ─────────────────────────── */
     function loadIgThumbs(){
-  document.querySelectorAll('.ig-thumb-target').forEach(container=>{
-    const thumbUrl=container.dataset.igThumb;
-    const shortcode=container.dataset.igShortcode;
-    const placeholder=container.querySelector('.ig-placeholder');
-    const shortEl=container.querySelector('.ig-shortcode');
+      document.querySelectorAll('.ig-thumb-target').forEach(container=>{
+        const thumbUrl=container.dataset.igThumb;
+        const shortcode=container.dataset.igShortcode;
+        const placeholder=container.querySelector('.ig-placeholder');
+        const shortEl=container.querySelector('.ig-shortcode');
 
-    if(!shortcode){
-      if(placeholder) placeholder.classList.remove('ig-loading');
-      return;
+        if(!shortcode){
+          if(placeholder) placeholder.classList.remove('ig-loading');
+          return;
+        }
+
+        const imgUrl=`https://images.weserv.nl/?url=instagram.com/p/${shortcode}/media/?size=l`;
+        const img=new Image();
+
+        img.onload=function(){
+          const wrap=document.createElement('div');
+          wrap.className='thumb-img-wrap';
+          const imgEl=document.createElement('img');
+          imgEl.src=imgUrl;
+          imgEl.alt='Instagram preview';
+          wrap.appendChild(imgEl);
+          container.insertBefore(wrap,container.firstChild);
+          if(placeholder){
+            placeholder.style.transition='opacity .3s';
+            placeholder.style.opacity='0';
+            setTimeout(()=>{placeholder.remove();},300);
+          }
+        };
+
+        img.onerror=function(){
+          if(shortEl&&shortcode)shortEl.textContent='/reel/'+shortcode;
+          if(placeholder)placeholder.classList.remove('ig-loading');
+        };
+
+        img.src=imgUrl;
+      });
     }
-
-    // Pakai thumbnail via noembed + embed Instagram
-    const imgUrl = `https://images.weserv.nl/?url=instagram.com/p/${shortcode}/media/?size=l`;
-
-    const img = new Image();
-
-    img.onload = function(){
-      const wrap=document.createElement('div');
-      wrap.className='thumb-img-wrap';
-
-      const imgEl=document.createElement('img');
-      imgEl.src=imgUrl;
-      imgEl.alt='Instagram preview';
-
-      wrap.appendChild(imgEl);
-
-      container.insertBefore(wrap,container.firstChild);
-
-      if(placeholder){
-        placeholder.style.transition='opacity .3s';
-        placeholder.style.opacity='0';
-
-        setTimeout(()=>{
-          placeholder.remove();
-        },300);
-      }
-    };
-
-    img.onerror = function(){
-      if(shortEl && shortcode){
-        shortEl.textContent='/reel/'+shortcode;
-      }
-
-      if(placeholder){
-        placeholder.classList.remove('ig-loading');
-      }
-    };
-
-    img.src = imgUrl;
-  });
-}
 
     /* ── MODAL ───────────────────────────────────────────── */
     let currentOpen=null;
@@ -464,7 +466,7 @@
       if(isLandscape)box.classList.add('modal-landscape');
       if(data.type==='instagram'){
         container.className='vc-instagram-fallback';
-        container.innerHTML = `
+        container.innerHTML=`
           <div class="flex flex-col items-center justify-center p-8 text-center h-full bg-gradient-to-b from-navy-800 to-black">
             <div class="w-20 h-20 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-3xl flex items-center justify-center shadow-2xl mb-6">
               <i data-lucide="instagram" class="w-10 h-10 text-white"></i>
@@ -477,7 +479,7 @@
           </div>
         `;
         lucide.createIcons();
-      } else if(data.type==='local'){
+      }else if(data.type==='local'){
         const vid=document.createElement('video');
         vid.src=data.url;vid.controls=true;vid.autoplay=true;
         vid.id='modal-active-video';
@@ -675,8 +677,8 @@
   <section style="background:var(--color-primary);" class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-center text-white/40 text-sm tracking-widest uppercase mb-8">Dipercaya Oleh Berbagai Instansi</p>
-      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth snap-x snap-mandatory">
-        <div class="inline-flex min-w-full justify-center gap-4 px-4">
+      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth">
+        <div class="inline-flex gap-4 snap-x snap-mandatory pl-2 sm:pl-4">
           @foreach($partners as $partner)
             <div class="partner-logo rounded-xl h-20 w-32 flex items-center justify-center shadow-sm overflow-hidden flex-none snap-center">
               @if($partner->logo_path)
@@ -709,17 +711,16 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════
-       MACRO: renderVideoCard — dipakai training & testimoni
-       Params: $video, $index, $section ('training'/'testimonial')
-  ════════════════════════════════════════════════════════ -->
   @php
-  /* Helper macro — render satu card video */
   function renderVideoCard($video, $index, $section) {
+    $isUpload  = $video->source_type === 'upload' && $video->file_path;
     $rawUrl    = $video->url ?? '';
     $embedUrl  = ''; $thumbUrl = ''; $videoType = 'external'; $igShortcode = '';
 
-    if (str_contains($rawUrl, 'youtu')) {
+    if ($isUpload) {
+      $videoType = 'local';
+      $embedUrl  = asset('storage/'.$video->file_path);
+    } elseif (str_contains($rawUrl, 'youtu')) {
       $videoType = 'youtube';
       preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/', $rawUrl, $m);
       $ytId     = $m[1] ?? '';
@@ -732,7 +733,7 @@
     } else {
       $embedUrl = $rawUrl;
     }
-      return compact('embedUrl','thumbUrl','videoType','igShortcode','rawUrl');
+    return compact('isUpload','embedUrl','thumbUrl','videoType','igShortcode','rawUrl');
   }
   @endphp
 
@@ -760,18 +761,15 @@
                           onclick="openVideoModal('training',{{ $index }})"
                           aria-label="Putar video {{ $video->title ?? 'Training '.($index+1) }}">
 
-                    {{-- ══ LAYER 1: Thumbnail / Preview ══ --}}
                     @if($thumbUrl)
-                      {{-- YouTube: thumbnail statis --}}
                       <img class="thumb-media" src="{{ $thumbUrl }}" alt="{{ $video->title ?? '' }}">
-
+                    @elseif($isUpload)
+                      <video class="thumb-media" src="{{ $embedUrl }}" preload="metadata" muted playsinline></video>
                     @elseif($videoType === 'instagram')
-                      {{-- Instagram: branded placeholder + coba load CDN thumb via JS --}}
                       <div class="ig-thumb-target ig-loading"
                            data-ig-shortcode="{{ $igShortcode }}"
                            data-ig-thumb="{{ $igShortcode ? igThumb($igShortcode) : '' }}"
                            style="position:absolute;inset:0;">
-                        {{-- Placeholder branded IG --}}
                         <div class="ig-placeholder">
                           <div class="ig-logo-ring">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
@@ -784,17 +782,14 @@
                           </div>
                         </div>
                       </div>
-
                     @else
                       <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#072d52,#0a3f6f);">
                         <i data-lucide="video" style="width:48px;height:48px;color:rgba(255,255,255,.15);"></i>
                       </div>
                     @endif
 
-                    {{-- ══ LAYER 2: Gradient overlay ══ --}}
                     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 45%,transparent 75%);pointer-events:none;z-index:1;"></div>
 
-                    {{-- ══ LAYER 3: Tombol play ══ --}}
                     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;">
                       <div style="width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;transition:transform .3s,background .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);"
                            class="group-hover:scale-110 group-hover:!bg-white/30">
@@ -802,7 +797,6 @@
                       </div>
                     </div>
 
-                    {{-- ══ LAYER 4: Badge sumber ══ --}}
                     <div style="position:absolute;top:10px;left:10px;z-index:3;">
                       @if($videoType==='youtube')
                         <span style="padding:2px 8px;background:#dc2626;color:#fff;font-size:10px;font-weight:700;border-radius:999px;">YouTube</span>
@@ -873,6 +867,8 @@
 
                     @if($thumbUrl)
                       <img class="thumb-media" src="{{ $thumbUrl }}" alt="{{ $video->title ?? '' }}">
+                    @elseif($isUpload)
+                      <video class="thumb-media" src="{{ $embedUrl }}" preload="metadata" muted playsinline></video>
                     @elseif($videoType === 'instagram')
                       <div class="ig-thumb-target ig-loading"
                            data-ig-shortcode="{{ $igShortcode }}"
@@ -1139,17 +1135,27 @@
   </section>
   @endif
 
+  {{--
+  ╔══════════════════════════════════════════════════════════════
+  ║  CONTACT SECTION
+  ║  ► Kartu Email menggunakan mailto: dengan subject & body
+  ║    yang sudah disiapkan di variabel $mailtoLink (PHP atas)
+  ╚══════════════════════════════════════════════════════════════
+  --}}
   <!-- CONTACT -->
   <section id="contact" class="bg-transparent py-16 sm:py-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
         <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-3 text-navy-900">Contact Us</h2>
         <p class="text-navy-900/70 font-bold max-w-2xl mx-auto leading-relaxed">
-          Mari berkolaborasi dengan Esensial Training & Consulting guna mewujudkan sumber daya manusia instansi yang berkualitas dan berdaya saing tinggi.
+          Mari berkolaborasi dengan Esensial Training &amp; Consulting guna mewujudkan sumber daya manusia instansi yang berkualitas dan berdaya saing tinggi.
         </p>
       </div>
       <div class="grid sm:grid-cols-3 gap-5">
-        <a href="https://instagram.com/{{ $s['contact_instagram']??'esensial.trainingconsulting' }}" target="_blank"
+
+        {{-- Instagram --}}
+        <a href="https://instagram.com/{{ $s['contact_instagram']??'esensial.trainingconsulting' }}"
+           target="_blank" rel="noopener noreferrer"
            class="bg-white rounded-xl p-6 border border-navy-900/5 text-center hover:border-blue-500/30 transition-all group shadow-lg">
           <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
             <i data-lucide="instagram" class="w-6 h-6 text-blue-600"></i>
@@ -1157,7 +1163,10 @@
           <p class="font-bold text-sm mb-1 text-navy-900">Instagram</p>
           <p class="text-gray-600 text-xs">{{ '@'.($s['contact_instagram']??'esensial.trainingconsulting') }}</p>
         </a>
-        <a href="https://wa.me/{{ $s['contact_whatsapp']??'6285713014064' }}" target="_blank"
+
+        {{-- WhatsApp --}}
+        <a href="https://wa.me/{{ $s['contact_whatsapp']??'6285713014064' }}"
+           target="_blank" rel="noopener noreferrer"
            class="bg-white rounded-xl p-6 border border-navy-900/5 text-center hover:border-blue-500/30 transition-all group shadow-lg">
           <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
             <i data-lucide="phone" class="w-6 h-6 text-blue-600"></i>
@@ -1165,18 +1174,36 @@
           <p class="font-bold text-sm mb-1 text-navy-900">WhatsApp</p>
           <p class="text-gray-600 text-xs">@php $wa=$s['contact_whatsapp']??'6285713014064';echo '0'.substr($wa,2); @endphp</p>
         </a>
-        <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}?subject=Konsultasi%20%26%20Informasi&body=Halo%20Esensial%20Training%20%26%20Consulting,%0A%0ASaya%20ingin%20bertanya%20mengenai%20layanan%20yang%20tersedia.%0A%0ATerima%20kasih."
-           class="bg-white rounded-xl p-6 border border-navy-900/5 text-center hover:border-blue-500/30 transition-all group shadow-lg">
+
+        {{--
+          ╔═══════════════════════════════════════════════════
+          ║  EMAIL CARD — mailto: dengan subject + body
+          ║  • target="_self" agar browser tidak blokir popup
+          ║  • rel="noopener" tetap aman
+          ║  • Semua hover effect dipertahankan
+          ╚═══════════════════════════════════════════════════
+        --}}
+        <a href="{{ $mailtoLink }}"
+           target="_self"
+           rel="noopener"
+           class="contact-card-email bg-white rounded-xl p-6 border border-navy-900/5 text-center hover:border-blue-500/30 transition-all group shadow-lg">
           <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
             <i data-lucide="mail" class="w-6 h-6 text-blue-600"></i>
           </div>
           <p class="font-bold text-sm mb-1 text-navy-900">Email</p>
-          <p class="text-gray-600 text-xs">{{ $s['contact_email']??'esensialtraining@gmail.com' }}</p>
+          <p class="text-gray-600 text-xs break-all">{{ $contactEmail }}</p>
         </a>
+
       </div>
     </div>
   </section>
 
+  {{--
+  ╔══════════════════════════════════════════════════════════════
+  ║  FOOTER
+  ║  ► Baris email di footer juga menggunakan $mailtoLink
+  ╚══════════════════════════════════════════════════════════════
+  --}}
   <!-- FOOTER -->
   <footer class="border-t border-white/10" style="background:var(--color-footer);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -1200,10 +1227,26 @@
         <div>
           <h4 class="font-heading font-bold text-sm mb-4">Hubungi Kami</h4>
           <div class="space-y-2 text-sm text-white/50">
-            <p><i data-lucide="instagram" class="w-4 h-4 inline mr-1"></i> {{ '@'.($s['contact_instagram']??'') }}</p>
-            <p><i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_whatsapp']??'' }}</p>
-            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> 
-               <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}" class="hover:text-white transition-colors">{{ $s['contact_email'] ?? 'esensialtraining@gmail.com' }}</a>
+            <p>
+              <i data-lucide="instagram" class="w-4 h-4 inline mr-1"></i>
+              {{ '@'.($s['contact_instagram']??'') }}
+            </p>
+            <p>
+              <i data-lucide="phone" class="w-4 h-4 inline mr-1"></i>
+              {{ $s['contact_whatsapp']??'' }}
+            </p>
+            {{--
+              ► Footer email: anchor mailto agar bisa diklik langsung
+                Tetap pakai style footer (text-white/50) + hover lebih terang
+            --}}
+            <p>
+              <i data-lucide="mail" class="w-4 h-4 inline mr-1"></i>
+              <a href="{{ $mailtoLink }}"
+                 target="_self"
+                 rel="noopener"
+                 class="footer-email-link hover:text-white/85 underline-offset-2 hover:underline">
+                {{ $contactEmail }}
+              </a>
             </p>
           </div>
         </div>
