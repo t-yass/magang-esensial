@@ -12,9 +12,9 @@ class DatabaseSeeder extends Seeder
     {
         // Admin user
         DB::table('users')->insertOrIgnore([
-            'name'       => 'Faris Isnawan',
+            'name'       => 'Admin Esensial',
             'email'      => 'esensialtraining@gmail.com',
-            'password'   => Hash::make('esensial2024!'),
+            'password'   => Hash::make('esensial2026!'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
