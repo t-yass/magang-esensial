@@ -20,10 +20,6 @@
         <label>Logo</label>
         <input type="file" name="logo" accept="image/*">
       </div>
-      <div>
-        <label>Urutan Tampil</label>
-        <input type="number" name="sort_order" value="{{ $partners->count() + 1 }}">
-      </div>
     </div>
     <button type="submit" class="btn-primary mt-4"><i data-lucide="plus" class="w-4 h-4"></i> Tambah Mitra</button>
   </form>
@@ -33,11 +29,12 @@
   <div class="px-6 py-4 border-b border-gray-100">
     <h3 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Daftar Mitra ({{ $partners->count() }})</h3>
   </div>
-  <table>
-    <thead>
-      <tr><th>No</th><th>Logo</th><th>Nama Instansi</th><th>Website</th><th>Tampilkan</th><th>Aksi</th></tr>
-    </thead>
-    <tbody>
+  <div class="overflow-x-auto">
+    <table class="min-w-full">
+      <thead>
+        <tr><th>No</th><th>Logo</th><th>Nama Instansi</th><th>Website</th><th>Tampilkan</th><th>Aksi</th></tr>
+      </thead>
+      <tbody>
       @forelse($partners as $p)
         <tr>
           <td>{{ $p->sort_order }}</td>

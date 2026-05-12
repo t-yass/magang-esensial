@@ -106,9 +106,9 @@
   <nav id="blog-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
-        <a id="blog-nav-back" href="{{ route('blog.index') }}" class="inline-flex items-center text-sm font-medium nav-link tracking-wide hover:opacity-80 transition-opacity">
+        <a id="blog-nav-back" href="{{ route('home') }}#blog" class="inline-flex items-center text-sm font-medium nav-link tracking-wide hover:opacity-80 transition-opacity">
           <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          <span>kembali</span>
+          <span>Kembali</span>
         </a>
         <div class="flex items-center gap-2">
           <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-8 w-auto rounded-lg object-contain nav-link opacity-0 sm:opacity-100 transition-opacity duration-300">
@@ -190,7 +190,9 @@
           <div class="space-y-2 text-sm text-white/50">
             <p><i data-lucide="instagram" class="w-4 h-4 inline mr-1"></i> {{ '@'.($s['contact_instagram']??'') }}</p>
             <p><i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_whatsapp']??'' }}</p>
-            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_email']??'' }}</p>
+            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> 
+               <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}" class="hover:text-white transition-colors">{{ $s['contact_email'] ?? 'esensialtraining@gmail.com' }}</a>
+            </p>
           </div>
         </div>
       </div>
@@ -203,8 +205,6 @@
   <script>
     const blogNav = document.getElementById('blog-nav');
     const backLink = document.getElementById('blog-nav-back');
-    const backTextDesktop = document.getElementById('blog-nav-back-text');
-    const backTextMobile = document.getElementById('blog-nav-back-mobile');
 
     // Scroll behavior
     window.addEventListener('scroll', () => {
@@ -214,42 +214,6 @@
         blogNav.classList.remove('scrolled');
       }
     });
-
-    // Dynamic back navigation
-    function setDynamicBackUrl() {
-      const referrer = document.referrer;
-      const homeUrl = '{{ route('home') }}';
-      const blogIndexUrl = '{{ route('blog.index') }}';
-      
-      let targetUrl = blogIndexUrl; // default
-      let backText = '← Kembali ke Daftar Berita';
-      let backTextMob = '← Kembali';
-      
-      // Check if referrer contains home/welcome path
-      if (referrer.includes('/') && !referrer.includes('/blog')) {
-        // User came from home page
-        targetUrl = homeUrl;
-        backText = '← Kembali ke Beranda';
-      } else if (referrer.includes('/blog')) {
-        // User came from blog index
-        targetUrl = blogIndexUrl;
-        backText = '← Kembali ke Daftar Berita';
-      }
-      
-      // Also check browser history
-      if (window.history.length > 1) {
-        // User has history, so back button should work
-      } else {
-        // No history, use default
-      }
-      
-      backLink.href = targetUrl;
-      backTextDesktop.textContent = backText;
-      // Mobile text stays the same
-    }
-    
-    // Set dynamic back URL on page load
-    setDynamicBackUrl();
   </script>
 </body>
 </html>

@@ -17,10 +17,9 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'       => 'required|string|max:200',
-            'website'    => 'nullable|url|max:200',
-            'sort_order' => 'nullable|integer',
-            'logo'       => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+            'name'    => 'required|string|max:200',
+            'website' => 'nullable|url|max:200',
+            'logo'    => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
         ]);
 
         $logoPath = null;
@@ -28,10 +27,12 @@ class PartnerController extends Controller
             $logoPath = $request->file('logo')->store('partners', 'public');
         }
 
+        $nextOrder = (Partner::max('sort_order') ?? 0) + 1;
+
         Partner::create([
             'name'       => $request->name,
             'website'    => $request->website,
-            'sort_order' => $request->sort_order ?? 0,
+            'sort_order' => $nextOrder,
             'logo_path'  => $logoPath,
             'is_visible' => true,
         ]);

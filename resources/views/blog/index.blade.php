@@ -186,7 +186,9 @@
           <div class="space-y-2 text-sm text-white/50">
             <p><i data-lucide="instagram" class="w-4 h-4 inline mr-1"></i> {{ '@'.($s['contact_instagram']??'') }}</p>
             <p><i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_whatsapp']??'' }}</p>
-            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_email']??'' }}</p>
+            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> 
+               <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}" class="hover:text-white transition-colors">{{ $s['contact_email'] ?? 'esensialtraining@gmail.com' }}</a>
+            </p>
           </div>
         </div>
       </div>

@@ -157,13 +157,12 @@ DB::table('workshop_intensifs')->updateOrInsert(
             DB::table('video_contents')->updateOrInsert(
                 ['section' => 'training', 'url' => $url],
                 [
-                    'section'     => 'training',
-                    'source_type' => 'link',
-                    'title'       => 'Video Training ' . ($i + 1),
-                    'url'         => $url,
-                    'is_visible'  => true,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'section'    => 'training',
+                    'title'      => 'Video Training ' . ($i + 1),
+                    'url'        => $url,
+                    'is_visible' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -178,13 +177,12 @@ DB::table('workshop_intensifs')->updateOrInsert(
             DB::table('video_contents')->updateOrInsert(
                 ['section' => 'testimonial', 'url' => $url],
                 [
-                    'section'     => 'testimonial',
-                    'source_type' => 'link',
-                    'title'       => 'Video Testimoni ' . ($i + 1),
-                    'url'         => $url,
-                    'is_visible'  => true,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
+                    'section'    => 'testimonial',
+                    'title'      => 'Video Testimoni ' . ($i + 1),
+                    'url'        => $url,
+                    'is_visible' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }

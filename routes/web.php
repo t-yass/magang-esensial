@@ -76,7 +76,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Video Content
         Route::get('/video-content', [VideoContentController::class, 'index'])->name('video-content');
         Route::post('/video-content', [VideoContentController::class, 'store'])->name('video-content.store');
-        Route::put('/video-content/{video}', [VideoContentController::class, 'update'])->name('video-content.update');
         Route::delete('/video-content/{video}', [VideoContentController::class, 'destroy'])->name('video-content.destroy');
     });
 });

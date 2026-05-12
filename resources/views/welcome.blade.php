@@ -250,11 +250,9 @@
       training:[
         @foreach($trainings as $video)
         @php
-          $isUpload=$video->source_type==='upload'&&$video->file_path;
           $rawUrl=$video->url??'';
           $embedUrl='';$videoType='external';$igShortcode='';
-          if($isUpload){$videoType='local';$embedUrl=asset('storage/'.$video->file_path);}
-          elseif(str_contains($rawUrl,'youtu')){
+          if(str_contains($rawUrl,'youtu')){
             $videoType='youtube';
             preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/',$rawUrl,$m);
             $ytId=$m[1]??'';
@@ -276,11 +274,9 @@
       testimonial:[
         @foreach($testimonials as $video)
         @php
-          $isUpload=$video->source_type==='upload'&&$video->file_path;
           $rawUrl=$video->url??'';
           $embedUrl='';$videoType='external';$igShortcode='';
-          if($isUpload){$videoType='local';$embedUrl=asset('storage/'.$video->file_path);}
-          elseif(str_contains($rawUrl,'youtu')){
+          if(str_contains($rawUrl,'youtu')){
             $videoType='youtube';
             preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/',$rawUrl,$m);
             $ytId=$m[1]??'';
@@ -679,8 +675,8 @@
   <section style="background:var(--color-primary);" class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-center text-white/40 text-sm tracking-widest uppercase mb-8">Dipercaya Oleh Berbagai Instansi</p>
-      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth">
-        <div class="inline-flex gap-4 snap-x snap-mandatory pl-2 sm:pl-4">
+      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth snap-x snap-mandatory">
+        <div class="inline-flex min-w-full justify-center gap-4 px-4">
           @foreach($partners as $partner)
             <div class="partner-logo rounded-xl h-20 w-32 flex items-center justify-center shadow-sm overflow-hidden flex-none snap-center">
               @if($partner->logo_path)
@@ -720,14 +716,10 @@
   @php
   /* Helper macro — render satu card video */
   function renderVideoCard($video, $index, $section) {
-    $isUpload  = $video->source_type === 'upload' && $video->file_path;
     $rawUrl    = $video->url ?? '';
     $embedUrl  = ''; $thumbUrl = ''; $videoType = 'external'; $igShortcode = '';
 
-    if ($isUpload) {
-      $videoType = 'local';
-      $embedUrl  = asset('storage/'.$video->file_path);
-    } elseif (str_contains($rawUrl, 'youtu')) {
+    if (str_contains($rawUrl, 'youtu')) {
       $videoType = 'youtube';
       preg_match('/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/', $rawUrl, $m);
       $ytId     = $m[1] ?? '';
@@ -740,7 +732,7 @@
     } else {
       $embedUrl = $rawUrl;
     }
-      return compact('isUpload','embedUrl','thumbUrl','videoType','igShortcode','rawUrl');
+      return compact('embedUrl','thumbUrl','videoType','igShortcode','rawUrl');
   }
   @endphp
 
@@ -772,10 +764,6 @@
                     @if($thumbUrl)
                       {{-- YouTube: thumbnail statis --}}
                       <img class="thumb-media" src="{{ $thumbUrl }}" alt="{{ $video->title ?? '' }}">
-
-                    @elseif($isUpload)
-                      {{-- Video lokal: frame pertama --}}
-                      <video class="thumb-media" src="{{ $embedUrl }}" preload="metadata" muted playsinline></video>
 
                     @elseif($videoType === 'instagram')
                       {{-- Instagram: branded placeholder + coba load CDN thumb via JS --}}
@@ -885,8 +873,6 @@
 
                     @if($thumbUrl)
                       <img class="thumb-media" src="{{ $thumbUrl }}" alt="{{ $video->title ?? '' }}">
-                    @elseif($isUpload)
-                      <video class="thumb-media" src="{{ $embedUrl }}" preload="metadata" muted playsinline></video>
                     @elseif($videoType === 'instagram')
                       <div class="ig-thumb-target ig-loading"
                            data-ig-shortcode="{{ $igShortcode }}"
@@ -1179,7 +1165,7 @@
           <p class="font-bold text-sm mb-1 text-navy-900">WhatsApp</p>
           <p class="text-gray-600 text-xs">@php $wa=$s['contact_whatsapp']??'6285713014064';echo '0'.substr($wa,2); @endphp</p>
         </a>
-        <a href="mailto:{{ $s['contact_email']??'esensialtraining@gmail.com' }}"
+        <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}?subject=Konsultasi%20%26%20Informasi&body=Halo%20Esensial%20Training%20%26%20Consulting,%0A%0ASaya%20ingin%20bertanya%20mengenai%20layanan%20yang%20tersedia.%0A%0ATerima%20kasih."
            class="bg-white rounded-xl p-6 border border-navy-900/5 text-center hover:border-blue-500/30 transition-all group shadow-lg">
           <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
             <i data-lucide="mail" class="w-6 h-6 text-blue-600"></i>
@@ -1216,7 +1202,9 @@
           <div class="space-y-2 text-sm text-white/50">
             <p><i data-lucide="instagram" class="w-4 h-4 inline mr-1"></i> {{ '@'.($s['contact_instagram']??'') }}</p>
             <p><i data-lucide="phone" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_whatsapp']??'' }}</p>
-            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> {{ $s['contact_email']??'' }}</p>
+            <p><i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> 
+               <a href="mailto:{{ trim($s['contact_email'] ?? 'esensialtraining@gmail.com') }}" class="hover:text-white transition-colors">{{ $s['contact_email'] ?? 'esensialtraining@gmail.com' }}</a>
+            </p>
           </div>
         </div>
       </div>
