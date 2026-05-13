@@ -621,8 +621,9 @@
   <section class="bg-transparent py-16 sm:py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
+        <p class="font-heading font-semibold text-xl sm:text-2xl tracking-wide text-[var(--color-accent)]">Program Unggulan</p>
         <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-3 text-navy-900">Workshop Intensif</h2>
-        <p class="font-semibold text-lg tracking-wide text-sky-500">SERVICE EXCELLENCE</p>
+        <p class="font-heading font-semibold text-lg tracking-wide text-[var(--color-accent)]">SERVICE EXCELLENCE</p>
       </div>
       <div class="grid lg:grid-cols-2 gap-10 items-center">
         <div>
