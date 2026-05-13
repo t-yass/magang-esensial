@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             'stat_government'  => '60+',
             'stat_education'   => '200+',
             // Contact
-            'contact_whatsapp'  => '6285713014064',
+            'contact_whatsapp'  => '62895429616359',
             'contact_instagram' => 'esensial.trainingconsulting',
             'contact_email'     => 'esensialtraining@gmail.com',
             'contact_address'   => 'Jl. Srikoyo, Kemasan, Ngadirejo, Kec. Kartasura, Kab. Sukoharjo, Jawa Tengah 57163',
@@ -245,22 +245,15 @@ DB::table('workshop_intensifs')->updateOrInsert(
                 'title'        => 'Workshop Service Excellence di Kementerian PUPR',
                 'slug'         => 'workshop-service-excellence-kementerian-pupr',
                 'category'     => 'Workshop',
-                'content'      => '<p>Pelatihan service excellence bersama Kementerian PUPR untuk meningkatkan kualitas pelayanan publik.</p>',
+                'content'      => 'Esensial Training & Consulting kembali dipercaya untuk menyelenggarakan Workshop Service Excellence bersama Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR) sebagai bagian dari upaya peningkatan kualitas pelayanan publik yang profesional, responsif, dan berorientasi pada kepuasan masyarakat. Kegiatan ini dilaksanakan dengan tujuan membangun pemahaman yang lebih mendalam mengenai pentingnya pelayanan prima di lingkungan instansi pemerintahan, khususnya dalam menghadapi tantangan pelayanan publik yang semakin dinamis dan kompleks. Dalam workshop ini, peserta mendapatkan berbagai materi terkait komunikasi efektif, etika pelayanan, pengelolaan emosi dalam bekerja, peningkatan sikap profesional, hingga strategi menghadapi berbagai karakter masyarakat dalam proses pelayanan. Materi disampaikan secara interaktif melalui pemaparan, diskusi kelompok, studi kasus, simulasi pelayanan, dan praktik langsung sehingga peserta tidak hanya memahami konsep secara teori, tetapi juga mampu mengimplementasikannya dalam aktivitas kerja sehari-hari. Selain meningkatkan kemampuan individu, kegiatan ini juga bertujuan membangun budaya kerja yang lebih humanis, kolaboratif, cepat tanggap, dan mampu memberikan pengalaman pelayanan yang positif kepada masyarakat. Melalui pelatihan ini diharapkan seluruh peserta mampu menerapkan prinsip service excellence secara konsisten sehingga dapat menciptakan kualitas pelayanan publik yang lebih baik, meningkatkan kepercayaan masyarakat, serta mendukung terciptanya lingkungan kerja yang profesional dan berintegritas.',
                 'published_at' => now(),
             ],
             [
                 'title'        => 'Pelatihan SDM di PT. Chickin Indonesia',
                 'slug'         => 'pelatihan-sdm-pt-chickin-indonesia',
                 'category'     => 'Training',
-                'content'      => '<p>Program pengembangan sumber daya manusia untuk meningkatkan produktivitas perusahaan.</p>',
+                'content'      => 'Dalam rangka meningkatkan kualitas sumber daya manusia dan mendukung pertumbuhan perusahaan yang berkelanjutan, Esensial Training & Consulting bekerja sama dengan PT. Chickin Indonesia dalam menyelenggarakan program pelatihan pengembangan SDM yang dirancang secara khusus sesuai dengan kebutuhan perusahaan. Program ini bertujuan untuk meningkatkan kompetensi karyawan baik dari sisi soft skill maupun pola pikir profesional agar mampu bekerja lebih efektif, produktif, dan adaptif terhadap perkembangan dunia kerja yang terus berubah. Selama kegiatan berlangsung, peserta mendapatkan materi mengenai komunikasi kerja yang efektif, leadership, problem solving, teamwork, manajemen waktu, peningkatan motivasi kerja, serta penguatan budaya kerja positif di lingkungan perusahaan. Pelatihan disampaikan menggunakan metode interaktif melalui presentasi, diskusi, simulasi kasus, roleplay, dan berbagai aktivitas kolaboratif yang mendorong partisipasi aktif peserta. Selain memberikan pemahaman teoritis, program ini juga menekankan penerapan strategi praktis yang dapat langsung diaplikasikan dalam pekerjaan sehari-hari sehingga hasil pelatihan dapat dirasakan secara nyata oleh perusahaan. Kegiatan ini diharapkan mampu membentuk tim kerja yang lebih profesional, solid, komunikatif, dan memiliki semangat kerja tinggi sehingga dapat mendukung peningkatan performa perusahaan secara menyeluruh serta membantu PT. Chickin Indonesia menghadapi tantangan bisnis dan persaingan industri yang semakin kompetitif.',
                 'published_at' => now(),
-            ],
-            [
-                'title'        => 'Seminar Motivasi di SMK Negeri 6 Surakarta',
-                'slug'         => 'seminar-motivasi-smk-negeri-6-surakarta',
-                'category'     => 'Pendidikan',
-                'content'      => '<p>Membangun semangat dan motivasi siswa melalui program pelatihan yang inspiratif.</p>',
-                'published_at' => null,
             ],
         ];
 

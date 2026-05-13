@@ -12,7 +12,7 @@
       <div>
         <label>Font Heading</label>
         <select name="font_heading">
-          @foreach(['Playfair Display','Merriweather','Lora','DM Serif Display','Georgia'] as $f)
+          @foreach(['Playfair Display','Montserrat','Poppins','Merriweather','Lora','DM Serif Display','Georgia'] as $f)
             <option value="{{ $f }}" {{ ($s['font_heading'] ?? 'Playfair Display') === $f ? 'selected' : '' }}>{{ $f }}</option>
           @endforeach
         </select>
@@ -20,7 +20,7 @@
       <div>
         <label>Font Body</label>
         <select name="font_body">
-          @foreach(['DM Sans','Poppins','Nunito','Inter','Roboto'] as $f)
+          @foreach(['DM Sans','Montserrat','Poppins','Nunito','Inter','Roboto'] as $f)
             <option value="{{ $f }}" {{ ($s['font_body'] ?? 'DM Sans') === $f ? 'selected' : '' }}>{{ $f }}</option>
           @endforeach
         </select>
