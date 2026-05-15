@@ -1,5 +1,5 @@
 @extends('admin.layout')
-@section('title', 'Blog & Berita')
+@section('title', 'Berita')
 
 @section('content')
 

@@ -34,6 +34,7 @@
     .btn-secondary:hover { border-color: #04599A; color: #04599A; }
     .btn-danger { background: #fee2e2; color: #dc2626; border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s; }
     .btn-danger:hover { background: #fecaca; }
+    .btn-danger.align-top { align-self: flex-start; margin-top: 0.125rem; }
     .btn-success { background: #d1fae5; color: #059669; border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: #f8fafc; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; text-align: left; border-bottom: 1.5px solid #e5e7eb; }
@@ -109,7 +110,7 @@
       </a>
       <a href="{{ route('admin.blog') }}" class="nav-item {{ request()->routeIs('admin.blog') ? 'active' : '' }}">
         <i data-lucide="newspaper" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-label">Blog & Berita</span>
+        <span class="nav-label">Berita</span>
       </a>
       <a href="{{ route('admin.gallery') }}" class="nav-item {{ request()->routeIs('admin.gallery') ? 'active' : '' }}">
         <i data-lucide="image" class="w-5 h-5 flex-shrink-0"></i>

@@ -165,20 +165,31 @@
     <div id="exp-list" class="space-y-4">
       @forelse($experiences as $exp)
         <div class="exp-row p-4 bg-gray-50 rounded-xl border border-gray-100">
-          <div class="flex gap-2 items-center mb-2">
-            <input type="text" name="exp_stats[]"
-                   value="{{ $exp->stat_label }}"
-                   class="form-input text-sm w-24 font-bold text-blue-600 shrink-0" placeholder="35+">
-            <input type="text" name="exp_categories[]"
-                   value="{{ $exp->category }}"
-                   class="form-input text-sm flex-1" placeholder="Instansi Korporasi">
-            <button type="button" class="btn-danger shrink-0" onclick="this.closest('.exp-row').remove()">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
+          <div class="grid gap-3 sm:grid-cols-[160px_auto_48px] items-start mb-3">
+            <div>
+              <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Statistik</label>
+              <input type="text" name="exp_stats[]"
+                     value="{{ $exp->stat_label }}"
+                     class="form-input text-sm w-full font-bold text-blue-600" placeholder="35+">
+            </div>
+            <div>
+              <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Kategori</label>
+              <input type="text" name="exp_categories[]"
+                     value="{{ $exp->category }}"
+                     class="form-input text-sm w-full" placeholder="Instansi Korporasi">
+            </div>
+            <div class="flex justify-end">
+              <button type="button" class="btn-danger align-top mt-6 shrink-0" onclick="this.closest('.exp-row').remove()" aria-label="Hapus pengalaman">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
-          <textarea name="exp_descriptions[]" rows="2"
-                    class="form-input text-sm w-full resize-none"
-                    placeholder="Deskripsi singkat (opsional)...">{{ $exp->description }}</textarea>
+          <div>
+            <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Deskripsi</label>
+            <textarea name="exp_descriptions[]" rows="3"
+                      class="form-input text-sm w-full resize-none"
+                      placeholder="Deskripsi singkat (opsional)...">{{ $exp->description }}</textarea>
+          </div>
         </div>
       @empty
         {{-- default rows --}}
@@ -188,14 +199,25 @@
           ['200+','Instansi Pendidikan','UIN Riau, Yayasan Al Abidin Surakarta, MAN 1 Surakarta, SMK Negeri 6 Surakarta, dan berbagai sekolah negeri/swasta serta jaringan sekolah IT di Indonesia.'],
         ] as [$stat,$cat,$desc])
           <div class="exp-row p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <div class="flex gap-2 items-center mb-2">
-              <input type="text" name="exp_stats[]" value="{{ $stat }}" class="form-input text-sm w-24 font-bold text-blue-600 shrink-0" placeholder="35+">
-              <input type="text" name="exp_categories[]" value="{{ $cat }}" class="form-input text-sm flex-1" placeholder="Kategori...">
-              <button type="button" class="btn-danger shrink-0" onclick="this.closest('.exp-row').remove()">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
+            <div class="grid gap-3 sm:grid-cols-[160px_auto_48px] items-start mb-3">
+              <div>
+                <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Statistik</label>
+                <input type="text" name="exp_stats[]" value="{{ $stat }}" class="form-input text-sm w-full font-bold text-blue-600" placeholder="35+">
+              </div>
+              <div>
+                <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Kategori</label>
+                <input type="text" name="exp_categories[]" value="{{ $cat }}" class="form-input text-sm w-full" placeholder="Kategori...">
+              </div>
+              <div class="flex justify-end">
+                <button type="button" class="btn-danger align-top mt-6 shrink-0" onclick="this.closest('.exp-row').remove()" aria-label="Hapus pengalaman">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </div>
-            <textarea name="exp_descriptions[]" rows="2" class="form-input text-sm w-full resize-none" placeholder="Deskripsi singkat (opsional)...">{{ $desc }}</textarea>
+            <div>
+              <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Deskripsi</label>
+              <textarea name="exp_descriptions[]" rows="3" class="form-input text-sm w-full resize-none" placeholder="Deskripsi singkat (opsional)...">{{ $desc }}</textarea>
+            </div>
           </div>
         @endforeach
       @endforelse
@@ -257,14 +279,25 @@
     const div  = document.createElement('div');
     div.className = 'exp-row p-4 bg-gray-50 rounded-xl border border-gray-100';
     div.innerHTML  = `
-      <div class="flex gap-2 items-center mb-2">
-        <input type="text" name="exp_stats[]"      class="form-input text-sm w-24 font-bold text-blue-600 shrink-0" placeholder="35+">
-        <input type="text" name="exp_categories[]" class="form-input text-sm flex-1" placeholder="Instansi Korporasi">
-        <button type="button" class="btn-danger shrink-0" onclick="this.closest('.exp-row').remove()">
-          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-        </button>
+      <div class="grid gap-3 sm:grid-cols-[160px_auto_48px] items-start mb-3">
+        <div>
+          <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Statistik</label>
+          <input type="text" name="exp_stats[]" class="form-input text-sm w-full font-bold text-blue-600" placeholder="35+">
+        </div>
+        <div>
+          <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Kategori</label>
+          <input type="text" name="exp_categories[]" class="form-input text-sm w-full" placeholder="Instansi Korporasi">
+        </div>
+        <div class="flex justify-end">
+          <button type="button" class="btn-danger align-top mt-6 shrink-0" onclick="this.closest('.exp-row').remove()" aria-label="Hapus pengalaman">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
-      <textarea name="exp_descriptions[]" rows="2" class="form-input text-sm w-full resize-none" placeholder="Deskripsi singkat (opsional)..."></textarea>`;
+      <div>
+        <label class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Deskripsi</label>
+        <textarea name="exp_descriptions[]" rows="3" class="form-input text-sm w-full resize-none" placeholder="Deskripsi singkat (opsional)..."></textarea>
+      </div>`;
     list.appendChild(div);
     lucide.createIcons();
   }

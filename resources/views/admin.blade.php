@@ -155,7 +155,7 @@
       </div>
       <div class="nav-item" onclick="switchPanel('blog')">
         <i data-lucide="newspaper" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="nav-label">Blog & Berita</span>
+        <span class="nav-label">Berita</span>
       </div>
       <div class="nav-item" onclick="switchPanel('gallery')">
         <i data-lucide="image" class="w-5 h-5 flex-shrink-0"></i>
@@ -568,7 +568,7 @@
 
       <!-- ===================== BLOG ===================== -->
       <div id="panel-blog" class="panel">
-        <p class="section-title">Blog & Berita</p>
+        <p class="section-title">Berita</p>
         <p class="section-sub">Kelola artikel, berita, dan postingan blog</p>
         <div class="flex gap-3 mb-6">
           <button class="inner-tab active" onclick="switchInnerTab(this,'blog')">Semua Artikel</button>
@@ -977,7 +977,7 @@
       about: 'About / Founder',
       programs: 'Program Pelatihan',
       partners: 'Mitra / Partner',
-      blog: 'Blog & Berita',
+      blog: 'Berita',
       gallery: 'Galeri',
       video: 'Video',
       contact: 'Kontak',
