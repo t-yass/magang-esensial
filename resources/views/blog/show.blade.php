@@ -131,7 +131,7 @@
         </div>
       @endif
 
-      <article class="prose prose-slate max-w-none">
+      <article class="prose prose-slate max-w-none text-justify leading-relaxed">
         {!! nl2br(e($post->content)) !!}
       </article>
 

@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $s['site_title'] ?? 'Esensial Training & Consulting' }}</title>
   <meta name="description" content="{{ $s['site_description'] ?? '' }}">
-  <link rel="icon" type="image/png" href="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}">
+  @php
+    $mainLogo = !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG');
+  @endphp
+  <link rel="icon" type="image/png" href="{{ $mainLogo }}">
 
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -107,8 +110,27 @@
     .gallery-item{transition:transform .4s,box-shadow .4s}
     .gallery-item:hover{transform:scale(1.03);box-shadow:0 15px 35px rgba(0,0,0,.2)}
     .cert-badge{background:linear-gradient(135deg,#072d52,#0a3f6f);border-left:3px solid var(--color-primary)}
-    .partner-logo{background:#fff;border:1px solid rgba(4,89,154,.15);transition:all .3s}
-    .partner-logo:hover{border-color:rgba(4,89,154,.4)}
+    .partner-logo{
+      background:#fff;
+      border:1px solid rgba(4,89,154,.15);
+      transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease,background .3s ease;
+      will-change:transform,box-shadow;
+    }
+    .partner-logo:hover{
+      transform:translateY(-2px);
+      border-color:rgba(4,89,154,.35);
+      box-shadow:12px 0 30px rgba(4,89,154,.12), -12px 0 30px rgba(4,89,154,.08);
+      background:rgba(255,255,255,.98);
+    }
+    .partner-logo img{
+      transition:transform .3s ease,filter .3s ease;
+      max-width:100%;
+      max-height:100%;
+    }
+    .partner-logo:hover img{
+      transform:scale(1.01);
+      filter:grayscale(0) opacity(1);
+    }
     .mobile-menu{transition:transform .3s ease,opacity .3s ease;transform:translateX(100%);opacity:0}
     .mobile-menu.open{transform:translateX(0);opacity:1}
     .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
@@ -542,7 +564,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
         <div class="flex items-center gap-3">
-          <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="h-10 w-auto sm:h-12 rounded-lg object-contain">
+          <img src="{{ $mainLogo }}" alt="Logo" class="h-10 w-auto sm:h-12 rounded-lg object-contain">
           <div class="hidden sm:block">
             <div class="font-heading font-bold text-sm text-white transition-colors duration-300" id="nav-brand">ESENSIAL</div>
             <div id="nav-tagline" class="text-[10px] text-navy-900 tracking-widest transition-colors duration-300">TRAINING & CONSULTING</div>
@@ -608,7 +630,7 @@
               <img src="{{ $founderPhoto }}" alt="{{ $s['founder_name'] ?? 'Founder' }}" class="h-full w-auto object-contain">
             </div>
             <div class="absolute -top-10 -right-10 w-24 bg-white p-3 rounded-xl shadow-2xl z-20 animate-fade-up delay-5 border border-navy-900/5">
-              <img src="{{ !empty($s['site_logo']) ? asset('storage/'.$s['site_logo']) : asset('images/logo.JPEG') }}" alt="Logo" class="w-full h-auto object-contain">
+              <img src="{{ $mainLogo }}" alt="Logo" class="w-full h-auto object-contain">
             </div>
           </div>
         </div>
@@ -621,9 +643,9 @@
   <section class="bg-transparent py-16 sm:py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <p class="font-heading font-semibold text-xl sm:text-2xl tracking-wide text-[var(--color-accent)]">Program Unggulan</p>
-        <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-3 text-navy-900">Workshop Intensif</h2>
-        <p class="font-heading font-semibold text-lg tracking-wide text-[var(--color-accent)]">SERVICE EXCELLENCE</p>
+        <p class="font-heading font-semibold text-xl sm:text-2xl tracking-wide text-[#0d76b0]">Program Unggulan</p>
+        <h2 class="font-heading text-3xl sm:text-4xl font-bold mb-1 text-navy-900">Workshop Intensif</h2>
+        <p class="font-heading font-semibold text-lg sm:text-xl tracking-wide text-[#0d76b0] mt-0">SERVICE EXCELLENCE</p>
       </div>
       <div class="grid lg:grid-cols-2 gap-10 items-center">
         <div>
@@ -678,8 +700,8 @@
   <section style="background:var(--color-primary);" class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-center text-white/40 text-sm tracking-widest uppercase mb-8">Dipercaya Oleh Berbagai Instansi</p>
-      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth">
-        <div class="inline-flex gap-4 snap-x snap-mandatory pl-2 sm:pl-4">
+      <div class="overflow-x-auto hide-scrollbar pb-4 scroll-smooth text-center">
+        <div class="inline-flex gap-4 snap-x snap-mandatory px-2 sm:px-4">
           @foreach($partners as $partner)
             <div class="partner-logo rounded-xl h-20 w-32 flex items-center justify-center shadow-sm overflow-hidden flex-none snap-center">
               @if($partner->logo_path)
